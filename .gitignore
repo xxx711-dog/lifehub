@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+*.log
+local_settings.py
+staticfiles/
+media/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test
+test_new_features.py
+*.test.js
+
+# Render/Deploy
+.render/
+
+# DuMate workspace artifacts
+.dumate/
+.ruff_cache/
+.opencode-router/
+opencode.json
+poster-design-demo.png

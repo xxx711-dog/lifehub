@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "logHistory": {
+    "logPath": "/Users/dogpay/.qianfan/workspace/155f25e519a946e197f9853c36bead85/scheduler/executions.jsonl",
+    "logSizeHighWatermark": 0,
+    "historyOffset": 0,
+    "done": true
+  },
+  "updatedAt": 1785722610753
+}

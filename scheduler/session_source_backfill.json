@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "done": true,
+  "logPath": "/Users/dogpay/.qianfan/workspace/155f25e519a946e197f9853c36bead85/scheduler/executions.jsonl",
+  "cutoffLogSize": 0,
+  "offset": 0,
+  "processedSessions": 0,
+  "updatedSessions": 0,
+  "missingSessions": 0,
+  "alreadyScheduledSessions": 0,
+  "skippedSessions": 0,
+  "startedAt": 1785722610730,
+  "finishedAt": 1785722610730,
+  "updatedAt": 1785722610730
+}

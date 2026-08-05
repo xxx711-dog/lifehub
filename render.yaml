@@ -1,0 +1,23 @@
+# Render 部署配置
+# 访问 https://dashboard.render.com/ 创建 Blueprint
+
+services:
+  - type: web
+    name: lifehub
+    runtime: python
+    plan: free
+    buildCommand: "bash build.sh"
+    startCommand: "gunicorn lifehub.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --threads 2 --timeout 60"
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_ALLOWED_HOSTS
+        value: "lifehub.onrender.com,localhost,127.0.0.1"
+      - key: WEB_CONCURRENCY
+        value: "2"
+    disk:
+      name: media-storage
+      mountPath: /opt/render/project/src/media
+      sizeGB: 1
