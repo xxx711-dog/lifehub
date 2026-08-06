@@ -2429,10 +2429,28 @@ const Pages = {
     }
   },
   async _switchToCity(name, lat, lon) {
-    Toast.info(`正在获取 ${name} 天气...`);
-    API.weather.setStoredCity({ name, lat, lon });
-    await Pages._loadWeatherPage();
-    Toast.success(`已切换到 ${name}`);
+    // Disable all city buttons to prevent double-click
+    document.querySelectorAll('[onclick*="_switchToCity"]').forEach(btn => {
+      btn.disabled = true;
+      btn.style.opacity = '0.5';
+    });
+    
+    Toast.info(`正在获取 ${name} 天气，请稍候...`);
+    
+    try {
+      API.weather.setStoredCity({ name, lat, lon });
+      await Pages._loadWeatherPage();
+      Toast.success(`已切换到 ${name}`);
+    } catch (e) {
+      console.error('City switch error:', e);
+      Toast.error('切换失败，请重试');
+    } finally {
+      // Re-enable buttons
+      document.querySelectorAll('[onclick*="_switchToCity"]').forEach(btn => {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+      });
+    }
   },
 
   profile() {
