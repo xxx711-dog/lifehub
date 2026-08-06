@@ -699,42 +699,80 @@ const API = {
         return null;
       }
     },
+    defaultCity: { name: '北京', lat: 39.9042, lon: 116.4074 },
     async loadWeather() {
       const stored = API.weather.getStoredCity();
       if (stored) {
         return await API.weather.fetchCurrentWeather(stored.lat, stored.lon);
       }
-      // Try geolocation
+      // Try geolocation first
       if (navigator.geolocation) {
-        return new Promise((resolve) => {
-          navigator.geolocation.getCurrentPosition(
-            async (pos) => {
-              const weather = await API.weather.fetchCurrentWeather(pos.coords.latitude, pos.coords.longitude);
-              resolve(weather);
-            },
-            () => resolve(null),
-            { timeout: 5000 }
-          );
-        });
+        try {
+          const pos = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
+          });
+          const weather = await API.weather.fetchCurrentWeather(pos.coords.latitude, pos.coords.longitude);
+          if (weather) {
+            // Try to get city name from coords
+            const cityName = await API.weather.getCityName(pos.coords.latitude, pos.coords.longitude);
+            weather.city = cityName || '当前位置';
+            API.weather.setStoredCity({ name: weather.city, lat: pos.coords.latitude, lon: pos.coords.longitude });
+            return weather;
+          }
+        } catch (e) {
+          console.log('Geolocation failed, using default city');
+        }
       }
-      return null;
+      // Fallback to default city
+      const { name, lat, lon } = API.weather.defaultCity;
+      const weather = await API.weather.fetchCurrentWeather(lat, lon);
+      if (weather) {
+        weather.city = name;
+        API.weather.setStoredCity({ name, lat, lon });
+      }
+      return weather;
     },
     async loadFullWeather() {
       const stored = API.weather.getStoredCity();
       if (stored) {
         return await API.weather.fetchFullWeather(stored.lat, stored.lon);
       }
+      // Try geolocation first
       if (navigator.geolocation) {
-        return new Promise((resolve) => {
-          navigator.geolocation.getCurrentPosition(
-            async (pos) => {
-              const weather = await API.weather.fetchFullWeather(pos.coords.latitude, pos.coords.longitude);
-              resolve(weather);
-            },
-            () => resolve(null),
-            { timeout: 5000 }
-          );
-        });
+        try {
+          const pos = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
+          });
+          const weather = await API.weather.fetchFullWeather(pos.coords.latitude, pos.coords.longitude);
+          if (weather) {
+            const cityName = await API.weather.getCityName(pos.coords.latitude, pos.coords.longitude);
+            weather.city = cityName || '当前位置';
+            API.weather.setStoredCity({ name: weather.city, lat: pos.coords.latitude, lon: pos.coords.longitude });
+            return weather;
+          }
+        } catch (e) {
+          console.log('Geolocation failed, using default city');
+        }
+      }
+      // Fallback to default city
+      const { name, lat, lon } = API.weather.defaultCity;
+      const weather = await API.weather.fetchFullWeather(lat, lon);
+      if (weather) {
+        weather.city = name;
+        API.weather.setStoredCity({ name, lat, lon });
+      }
+      return weather;
+    },
+    async getCityName(lat, lon) {
+      try {
+        const url = `https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&language=zh`;
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data.results && data.results.length > 0) {
+          return data.results[0].name;
+        }
+      } catch (e) {
+        console.error('Reverse geocoding failed:', e);
       }
       return null;
     },
@@ -2250,6 +2288,24 @@ const Pages = {
           </div>
         </div>
         
+        <!-- 快捷城市选择 -->
+        <div class="dash-section" style="padding:12px 16px">
+          <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px">📍 快捷切换城市</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <button class="btn btn-light btn-sm" onclick="Pages._switchToCity('北京', 39.9042, 116.4074)">北京</button>
+            <button class="btn btn-light btn-sm" onclick="Pages._switchToCity('上海', 31.2304, 121.4737)">上海</button>
+            <button class="btn btn-light btn-sm" onclick="Pages._switchToCity('广州', 23.1291, 113.2644)">广州</button>
+            <button class="btn btn-light btn-sm" onclick="Pages._switchToCity('深圳', 22.5431, 114.0579)">深圳</button>
+            <button class="btn btn-light btn-sm" onclick="Pages._switchToCity('杭州', 30.2741, 120.1551)">杭州</button>
+            <button class="btn btn-light btn-sm" onclick="Pages._switchToCity('成都', 30.5728, 104.0668)">成都</button>
+            <button class="btn btn-light btn-sm" onclick="Pages._switchToCity('武汉', 30.5928, 114.3055)">武汉</button>
+            <button class="btn btn-light btn-sm" onclick="Pages._switchToCity('西安', 34.3416, 108.9398)">西安</button>
+            <button class="btn btn-light btn-sm" onclick="Pages._switchToCity('重庆', 29.5628, 106.5516)">重庆</button>
+            <button class="btn btn-light btn-sm" onclick="Pages._switchToCity('南京', 32.0603, 118.7969)">南京</button>
+            <button class="btn btn-primary btn-sm" onclick="Pages._searchCityWeather()">🔍 其他城市</button>
+          </div>
+        </div>
+        
         <!-- 穿衣建议 -->
         <div class="dash-section" style="background:rgba(255,209,102,0.08);border:1.5px solid rgba(255,209,102,0.15)">
           <h3><span class="ico">👔</span> 穿衣建议</h3>
@@ -2371,6 +2427,12 @@ const Pages = {
     } else {
       Toast.error('城市未找到，请检查拼写');
     }
+  },
+  async _switchToCity(name, lat, lon) {
+    Toast.info(`正在获取 ${name} 天气...`);
+    API.weather.setStoredCity({ name, lat, lon });
+    await Pages._loadWeatherPage();
+    Toast.success(`已切换到 ${name}`);
   },
 
   profile() {
