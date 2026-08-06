@@ -1,0 +1,2147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#FF006E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="LifeHub">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<title>LifeHub - 生活枢纽</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#FF006E;--primary-light:#FF4D9D;--primary-dark:#D4005A;--primary-bg:#FFF0F5;
+  --bg:#FFF8F0;--card:#FFFFFF;--text:#1A1A2E;--text-light:#555577;--text-muted:#A0A0B8;
+  --border:#FFE0EC;--success:#06D6A0;--warning:#FFD166;--danger:#EF476F;--info:#118AB2;
+  --accent-cyan:#00BBF9;--accent-yellow:#FFD166;--accent-green:#06D6A0;--accent-pink:#FF006E;
+  --accent-orange:#FB5607;--accent-purple:#8338EC;--radius:24px;--radius-sm:14px;
+  --shadow:0 4px 20px rgba(255,0,110,0.10);--shadow-lg:0 12px 40px rgba(255,0,110,0.18);
+  --shadow-color:rgba(255,0,110,0.12);--transition:all .3s cubic-bezier(.34,1.56,.64,1);
+  --nav-h:64px;--bottom-h:68px;
+}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:var(--bg);
+  background-image:
+    radial-gradient(circle at 0% 0%, rgba(255,0,110,0.12) 0%, transparent 35%),
+    radial-gradient(circle at 100% 0%, rgba(0,187,249,0.10) 0%, transparent 35%),
+    radial-gradient(circle at 50% 100%, rgba(131,56,236,0.10) 0%, transparent 45%),
+    radial-gradient(circle at 100% 100%, rgba(6,214,160,0.10) 0%, transparent 35%),
+    radial-gradient(circle at 20% 60%, rgba(251,86,7,0.06) 0%, transparent 30%),
+    radial-gradient(circle at 80% 40%, rgba(255,209,102,0.08) 0%, transparent 30%);
+  background-attachment:fixed;color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;
+}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;outline:none}
+input,select,textarea{font-family:inherit;outline:none;border:none}
+ul{list-style:none}img{max-width:100%;display:block}
+.hidden{display:none!important}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--accent-pink),var(--accent-orange),var(--accent-yellow));border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,var(--accent-orange),var(--accent-purple))}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 20px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;transition:var(--transition);white-space:nowrap}
+.btn-primary{background:linear-gradient(135deg,var(--accent-pink),var(--accent-orange),var(--accent-yellow));background-size:200% 200%;color:#fff;box-shadow:0 4px 16px rgba(255,0,110,0.30)}
+.btn-primary:hover{background-position:100% 100%;box-shadow:0 6px 24px rgba(255,0,110,0.40);transform:translateY(-2px)}
+.btn-primary:active{transform:translateY(0) scale(.98)}
+.btn-light{background:linear-gradient(135deg,var(--primary-bg),rgba(255,209,102,0.12));color:var(--primary);border:1.5px solid rgba(255,0,110,0.08)}
+.btn-light:hover{background:linear-gradient(135deg,#FFDDE8,rgba(255,209,102,0.2));transform:translateY(-1px)}
+.btn-danger{background:rgba(239,71,111,.12);color:var(--danger)}
+.btn-danger:hover{background:var(--danger);color:#fff}
+.btn-ghost{background:transparent;color:var(--text-light)}
+.btn-ghost:hover{background:var(--bg)}
+.btn-sm{padding:6px 14px;font-size:13px}
+.btn-block{display:flex;width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+.tag{display:inline-flex;align-items:center;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600}
+.tag-primary{background:linear-gradient(135deg,var(--primary-bg),rgba(255,209,102,0.12));color:var(--primary)}
+.tag-success{background:linear-gradient(135deg,rgba(6,214,160,.12),rgba(0,187,249,0.08));color:var(--success)}
+.tag-warning{background:linear-gradient(135deg,rgba(255,209,102,.2),rgba(251,86,7,0.08));color:var(--accent-orange)}
+.tag-danger{background:linear-gradient(135deg,rgba(239,71,111,.12),rgba(255,0,110,0.08));color:var(--danger)}
+.tag-info{background:linear-gradient(135deg,rgba(17,138,178,.12),rgba(131,56,236,0.08));color:var(--info)}
+.tag-gray{background:#F0F1F5;color:var(--text-muted)}
+
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);transition:var(--transition)}
+.input-field{width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:14px;background:#FAFBFC;color:var(--text);transition:var(--transition)}
+.input-field:focus{border-color:var(--primary);background:#fff;box-shadow:0 0 0 4px rgba(255,0,110,.12)}
+textarea.input-field{resize:vertical;min-height:80px}
+select.input-field{cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23B2BEC3' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
+.form-group{margin-bottom:16px}
+.form-label{display:block;margin-bottom:6px;font-size:13px;font-weight:600;color:var(--text-light)}
+.form-row{display:flex;gap:12px}
+.form-row>*{flex:1}
+
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;text-align:center;color:var(--text-muted)}
+.empty-state .icon{font-size:48px;margin-bottom:12px;opacity:.5}
+.empty-state .title{font-size:16px;font-weight:600;margin-bottom:6px;color:var(--text-light)}
+.empty-state .desc{font-size:14px}
+
+.top-nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:linear-gradient(90deg,rgba(255,255,255,0.75),rgba(255,240,245,0.75),rgba(240,248,255,0.75));backdrop-filter:blur(24px) saturate(1.5);-webkit-backdrop-filter:blur(24px) saturate(1.5);box-shadow:0 2px 24px rgba(255,0,110,0.10),inset 0 -1px 0 rgba(255,0,110,0.08);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:100}
+.top-nav .logo{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:800;background:linear-gradient(135deg,var(--accent-pink),var(--accent-orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.top-nav .logo .dot{width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--accent-pink),var(--accent-orange));display:flex;align-items:center;justify-content:center;color:#fff;-webkit-text-fill-color:#fff;font-size:18px;box-shadow:0 4px 16px rgba(255,0,110,0.30);animation:logoPulse 3s ease-in-out infinite}
+@keyframes logoPulse{0%,100%{transform:scale(1);box-shadow:0 4px 16px rgba(255,0,110,0.30)}50%{transform:scale(1.08);box-shadow:0 6px 24px rgba(255,0,110,0.40)}}
+.top-nav .nav-actions{display:flex;align-items:center;gap:12px}
+.top-nav .user-chip{display:flex;align-items:center;gap:8px;padding:6px 16px 6px 6px;background:linear-gradient(135deg,var(--primary-bg),rgba(255,209,102,0.15));border-radius:30px;cursor:pointer;transition:var(--transition);border:1.5px solid rgba(255,0,110,0.08)}
+.top-nav .user-chip:hover{background:linear-gradient(135deg,#FFDDE8,rgba(255,209,102,0.25));transform:scale(1.03)}
+.top-nav .avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent-pink),var(--accent-purple));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;box-shadow:0 2px 10px rgba(131,56,236,0.25)}
+.top-nav .user-chip .name{font-size:13px;font-weight:700;color:var(--primary);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:var(--bottom-h);background:linear-gradient(90deg,rgba(255,255,255,0.8),rgba(255,240,245,0.8),rgba(240,248,255,0.8));backdrop-filter:blur(24px) saturate(1.5);-webkit-backdrop-filter:blur(24px) saturate(1.5);box-shadow:0 -2px 24px rgba(255,0,110,0.10),inset 0 1px 0 rgba(255,0,110,0.06);display:flex;z-index:100}
+.bottom-nav .tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--text-muted);font-size:10px;font-weight:600;transition:var(--transition);position:relative}
+.bottom-nav .tab .ico{font-size:22px;line-height:1;transition:var(--transition)}
+.bottom-nav .tab.active{color:var(--primary)}
+.bottom-nav .tab.active .ico{transform:translateY(-3px) scale(1.15);filter:drop-shadow(0 4px 8px rgba(255,0,110,0.30))}
+.bottom-nav .tab.active::after{content:'';position:absolute;bottom:4px;width:24px;height:4px;border-radius:2px;background:linear-gradient(90deg,var(--accent-pink),var(--accent-orange),var(--accent-yellow))}
+.bottom-nav .tab:active{background:var(--primary-bg)}
+
+.sidebar{position:fixed;top:var(--nav-h);left:0;bottom:0;width:220px;background:linear-gradient(180deg,rgba(255,255,255,0.7),rgba(255,240,245,0.5));backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:20px 16px;z-index:90;overflow-y:auto;display:none;border-right:1px solid rgba(255,0,110,0.06)}
+.sidebar .nav-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:var(--radius-sm);font-size:15px;font-weight:600;color:var(--text-light);transition:var(--transition);margin-bottom:4px;position:relative}
+.sidebar .nav-item .ico{font-size:20px;width:24px;text-align:center;transition:var(--transition)}
+.sidebar .nav-item:hover{background:var(--primary-bg);color:var(--primary);transform:translateX(4px)}
+.sidebar .nav-item:hover .ico{transform:scale(1.2)}
+.sidebar .nav-item.active{background:linear-gradient(135deg,var(--accent-pink),var(--accent-orange));color:#fff;box-shadow:0 4px 16px rgba(255,0,110,0.30)}
+.sidebar .nav-item.active .ico{transform:scale(1.15)}
+
+.app-body{padding-top:var(--nav-h);padding-bottom:var(--bottom-h);min-height:100vh}
+.main-content{padding:20px;max-width:1200px;margin:0 auto}
+
+.auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#FF006E 0%,#FB5607 25%,#FFD166 50%,#06D6A0 75%,#00BBF9 100%);background-size:300% 300%;animation:dopamineShift 6s ease infinite;position:relative;overflow:hidden}
+.auth-page::before{content:'';position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,0.08);top:-80px;left:-80px;animation:floatBubble 8s ease-in-out infinite}
+.auth-page::after{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.06);bottom:-60px;right:-40px;animation:floatBubble 10s ease-in-out infinite reverse}
+@keyframes dopamineShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes floatBubble{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,20px) scale(1.1)}}
+.auth-card{background:rgba(255,255,255,0.95);backdrop-filter:blur(24px);border-radius:32px;padding:40px 32px;width:100%;max-width:400px;box-shadow:0 24px 80px rgba(0,0,0,.20),0 0 0 1px rgba(255,255,255,0.5) inset}
+.auth-card .auth-logo{text-align:center;margin-bottom:28px}
+.auth-card .auth-logo .dot{width:64px;height:64px;border-radius:20px;background:linear-gradient(135deg,var(--accent-pink),var(--accent-orange));display:inline-flex;align-items:center;justify-content:center;color:#fff;-webkit-text-fill-color:#fff;font-size:30px;margin-bottom:12px;box-shadow:0 8px 28px rgba(255,0,110,0.30);animation:logoPulse 3s ease-in-out infinite}
+.auth-card .auth-logo h1{font-size:26px;font-weight:800;background:linear-gradient(135deg,var(--accent-pink),var(--accent-orange),var(--accent-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.auth-card .auth-logo p{font-size:14px;color:var(--text-muted);margin-top:4px}
+.auth-card .auth-tabs{display:flex;background:var(--bg);border-radius:var(--radius-sm);padding:4px;margin-bottom:24px}
+.auth-card .auth-tabs button{flex:1;padding:10px;border-radius:10px;font-size:14px;font-weight:600;color:var(--text-muted);transition:var(--transition)}
+.auth-card .auth-tabs button.active{background:linear-gradient(135deg,var(--accent-pink),var(--accent-orange));color:#fff;box-shadow:0 2px 10px rgba(255,0,110,0.25)}
+.auth-error{background:rgba(255,118,117,.1);color:var(--danger);padding:10px 14px;border-radius:var(--radius-sm);font-size:13px;margin-bottom:16px;display:none}
+.auth-error.show{display:block}
+
+.page-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.page-title h2{font-size:24px;font-weight:800;background:linear-gradient(135deg,var(--accent-pink),var(--accent-orange),var(--accent-yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:hueShift 6s ease-in-out infinite}
+@keyframes hueShift{0%,100%{filter:hue-rotate(0deg)}50%{filter:hue-rotate(15deg)}}
+.page-title .subtitle{font-size:13px;color:var(--text-muted);margin-top:2px}
+.page-title .actions{display:flex;gap:8px;flex-wrap:wrap}
+
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.dash-card{padding:24px;border-radius:var(--radius);color:#fff;position:relative;overflow:hidden;cursor:pointer;transition:var(--transition)}
+.dash-card:hover{transform:translateY(-8px) scale(1.03);box-shadow:0 16px 48px rgba(0,0,0,0.18)}
+.dash-card .bg-icon{position:absolute;right:-12px;bottom:-12px;font-size:80px;opacity:.20;transition:var(--transition)}
+.dash-card:hover .bg-icon{transform:scale(1.15) rotate(-8deg);opacity:.25}
+.dash-card .label{font-size:13px;opacity:.9;margin-bottom:8px;font-weight:500;letter-spacing:.5px}
+.dash-card .value{font-size:30px;font-weight:800;line-height:1.2;text-shadow:0 2px 8px rgba(0,0,0,0.15)}
+.dash-card .sub{font-size:12px;opacity:.85;margin-top:6px}
+.dash-card::before{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,0.15),transparent);pointer-events:none}
+.dash-card.c-clothes{background:linear-gradient(135deg,#FF006E,#FB5607);box-shadow:0 8px 32px rgba(255,0,110,0.25)}
+.dash-card.c-food{background:linear-gradient(135deg,#FFD166,#06D6A0);box-shadow:0 8px 32px rgba(255,209,102,0.25)}
+.dash-card.c-home{background:linear-gradient(135deg,#FB5607,#FFD166);box-shadow:0 8px 32px rgba(251,86,7,0.25)}
+.dash-card.c-travel{background:linear-gradient(135deg,#00BBF9,#8338EC);box-shadow:0 8px 32px rgba(0,187,249,0.25)}
+
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat-mini{background:var(--card);border-radius:var(--radius-sm);padding:16px;box-shadow:var(--shadow);transition:var(--transition);position:relative;overflow:hidden;border:2px solid transparent}
+.stat-mini:hover{transform:translateY(-4px) scale(1.02);box-shadow:var(--shadow-lg)}
+.stat-mini::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--radius-sm) var(--radius-sm) 0 0}
+.stat-mini:nth-child(1)::before{background:linear-gradient(90deg,var(--accent-pink),var(--accent-orange))}
+.stat-mini:nth-child(2)::before{background:linear-gradient(90deg,var(--accent-yellow),var(--accent-green))}
+.stat-mini:nth-child(3)::before{background:linear-gradient(90deg,var(--accent-orange),var(--accent-yellow))}
+.stat-mini:nth-child(4)::before{background:linear-gradient(90deg,var(--accent-cyan),var(--accent-purple))}
+.stat-mini .label{font-size:12px;color:var(--text-muted);margin-bottom:4px}
+.stat-mini .value{font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--accent-pink),var(--accent-orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-mini .unit{font-size:13px;color:var(--text-muted);font-weight:500}
+
+.dash-section{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:16px;transition:var(--transition);border:1.5px solid rgba(255,0,110,0.04)}
+.dash-section:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+.dash-section h3{font-size:16px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.dash-section h3 .ico{font-size:22px;animation:bounce 2s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.dash-section .more{font-size:13px;color:var(--primary);font-weight:600;margin-left:auto;cursor:pointer}
+
+.filter-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filter-bar select{padding:8px 32px 8px 12px;border-radius:10px;border:2px solid var(--border);font-size:13px;background:#FAFBFC;color:var(--text);cursor:pointer;max-width:140px;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23B2BEC3' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;transition:var(--transition)}
+.filter-bar select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(255,0,110,.1)}
+.filter-bar input[type=text],.filter-bar input[type=date],.filter-bar input[type=number]{padding:8px 12px;border-radius:10px;border:2px solid var(--border);font-size:13px;background:#FAFBFC;color:var(--text);max-width:160px;transition:var(--transition)}
+.filter-bar input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(255,0,110,.1)}
+
+.list-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.list-item{background:var(--card);border-radius:var(--radius);padding:16px 16px 16px 20px;box-shadow:var(--shadow);transition:var(--transition);position:relative;overflow:hidden;border:1.5px solid rgba(255,0,110,0.04)}
+.list-item::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px;background:linear-gradient(180deg,var(--accent-pink),var(--accent-orange),var(--accent-yellow))}
+.list-item:hover{transform:translateY(-4px) scale(1.01);box-shadow:var(--shadow-lg)}
+.list-item .item-header{display:flex;align-items:start;justify-content:space-between;margin-bottom:8px;gap:8px}
+.list-item .item-title{font-size:15px;font-weight:700;flex:1;word-break:break-word}
+.list-item .item-body{font-size:13px;color:var(--text-light);margin-bottom:10px}
+.list-item .item-body p{margin-bottom:4px}
+.list-item .item-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.list-item .item-footer{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.list-item .item-actions{display:flex;gap:6px}
+
+.icon-btn{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--text-light);font-size:14px;transition:var(--transition)}
+.icon-btn:hover{background:linear-gradient(135deg,var(--primary-bg),rgba(255,209,102,0.1));color:var(--primary);transform:scale(1.1)}
+.icon-btn.danger:hover{background:linear-gradient(135deg,rgba(239,71,111,.15),rgba(255,0,110,0.08));color:var(--danger)}
+
+.check-item{display:flex;align-items:center;gap:10px;padding:14px;background:var(--card);border-radius:var(--radius-sm);box-shadow:var(--shadow);margin-bottom:8px;transition:var(--transition);border:1.5px solid rgba(255,0,110,0.04)}
+.check-item:hover{transform:translateX(4px);box-shadow:var(--shadow-lg)}
+.check-item.done{opacity:.55}
+.check-item.done .check-label{text-decoration:line-through;color:var(--text-muted)}
+.check-item .checkbox{width:24px;height:24px;border-radius:8px;border:2.5px solid var(--border);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+.check-item .checkbox:hover{border-color:var(--accent-pink)}
+.check-item .checkbox.checked{background:linear-gradient(135deg,var(--accent-green),var(--accent-cyan));border-color:var(--success);color:#fff;box-shadow:0 2px 10px rgba(6,214,160,0.30)}
+.check-item .checkbox.checked::after{content:"\2713";font-size:15px;font-weight:700}
+.check-item .check-label{flex:1;font-size:14px;font-weight:500}
+.check-item .check-meta{font-size:12px;color:var(--text-muted)}
+
+.timeline{position:relative;padding-left:28px}
+.timeline::before{content:"";position:absolute;left:7px;top:4px;bottom:4px;width:3px;background:linear-gradient(180deg,var(--accent-pink),var(--accent-orange),var(--accent-yellow),var(--accent-green),var(--accent-cyan),var(--accent-purple));border-radius:2px}
+.timeline-item{position:relative;padding-bottom:20px}
+.timeline-item::before{content:"";position:absolute;left:-28px;top:2px;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,var(--accent-pink),var(--accent-orange));border:3px solid #fff;box-shadow:0 0 0 3px var(--primary-bg);transition:var(--transition)}
+.timeline-item:hover::before{transform:scale(1.2);box-shadow:0 0 0 4px var(--primary-bg),0 0 12px rgba(255,0,110,0.30)}
+.timeline-item .tl-time{font-size:12px;color:var(--primary);font-weight:700;margin-bottom:4px}
+.timeline-item .tl-title{font-size:14px;font-weight:600;margin-bottom:4px}
+.timeline-item .tl-desc{font-size:13px;color:var(--text-light)}
+
+.chart-container{display:flex;align-items:flex-end;gap:12px;height:200px;padding:16px 0;overflow-x:auto}
+.chart-bar-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;flex-shrink:0;min-width:50px}
+.chart-bar{width:40px;border-radius:8px 8px 0 0;background:linear-gradient(180deg,var(--accent-pink),var(--accent-orange),var(--accent-yellow),var(--accent-green));transition:var(--transition);min-height:4px;position:relative;cursor:pointer;box-shadow:0 4px 12px rgba(255,0,110,0.15)}
+.chart-bar:hover{filter:brightness(1.15) saturate(1.3);transform:scaleY(1.05);transform-origin:bottom}
+.chart-bar .tip{position:absolute;top:-24px;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;white-space:nowrap;opacity:0;transition:var(--transition)}
+.chart-bar:hover .tip{opacity:1}
+.chart-bar-wrap .label{font-size:11px;color:var(--text-muted);font-weight:500;text-align:center;max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay.show{opacity:1;pointer-events:auto}
+.modal{background:#fff;width:100%;max-width:520px;max-height:90vh;border-radius:28px 28px 0 0;overflow:hidden;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .35s cubic-bezier(.34,1.56,.64,1);box-shadow:0 -8px 40px rgba(255,0,110,0.15)}
+.modal-overlay.show .modal{transform:translateY(0)}
+.modal-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,var(--primary-bg),rgba(255,209,102,0.08))}
+.modal-header h3{font-size:18px;font-weight:700;background:linear-gradient(135deg,var(--accent-pink),var(--accent-orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.modal-close{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--text-light);font-size:18px;transition:var(--transition)}
+.modal-close:hover{background:rgba(255,118,117,.15);color:var(--danger)}
+.modal-body{padding:20px 24px;overflow-y:auto;flex:1}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:12px;justify-content:flex-end}
+
+.recipe-detail{padding:4px 0}
+.recipe-detail .detail-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.recipe-detail .detail-meta-item{font-size:13px;color:var(--text-muted);background:var(--bg);padding:6px 12px;border-radius:20px;font-weight:500}
+.recipe-detail .detail-section{margin-bottom:20px}
+.recipe-detail .detail-section-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.recipe-detail .detail-list{list-style:none;padding:0;margin:0}
+.recipe-detail .detail-list li{padding:8px 0;border-bottom:1px dashed var(--border);font-size:14px;color:var(--text);line-height:1.6}
+.recipe-detail .detail-list li:last-child{border-bottom:none}
+.recipe-detail .detail-steps li{display:flex;gap:10px;align-items:flex-start;padding:10px 0}
+.recipe-detail .detail-steps .step-num{min-width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent-pink),var(--accent-orange));color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;margin-top:2px}
+.recipe-detail .detail-steps .step-text{flex:1;font-size:14px;color:var(--text);line-height:1.6}
+
+.img-upload-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.img-preview{width:80px;height:80px;border-radius:12px;object-fit:cover;background:var(--bg);border:2px dashed var(--border)}
+.img-preview-placeholder{width:80px;height:80px;border-radius:12px;background:var(--bg);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:24px}
+.img-upload-input{display:none}
+
+.toast-container{position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--text);color:#fff;padding:12px 24px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.15);animation:toastIn .4s cubic-bezier(.34,1.56,.64,1);max-width:90vw}
+.toast.success{background:linear-gradient(135deg,var(--accent-green),var(--accent-cyan));box-shadow:0 8px 24px rgba(6,214,160,0.30)}
+.toast.error{background:linear-gradient(135deg,var(--danger),var(--accent-orange));box-shadow:0 8px 24px rgba(239,71,111,0.30)}
+@keyframes toastIn{from{opacity:0;transform:translateY(-20px) scale(.8)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+.loading{text-align:center;padding:40px;color:var(--text-muted)}
+.spinner{width:44px;height:44px;border:4px solid var(--primary-bg);border-top-color:var(--accent-pink);border-right-color:var(--accent-orange);border-bottom-color:var(--accent-yellow);border-left-color:var(--accent-purple);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(min-width:768px){:root{--bottom-h:0px}.bottom-nav{display:none}.sidebar{display:block}.app-body{padding-left:220px}.main-content{padding:24px 32px}.modal-overlay{align-items:center}.modal{border-radius:28px;max-width:560px;transform:scale(.85) translateY(20px);opacity:0}.modal-overlay.show .modal{transform:scale(1) translateY(0);opacity:1}}
+@media(min-width:1024px){.dash-grid{grid-template-columns:repeat(4,1fr)}}
+
+.install-banner{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(120px);z-index:250;background:linear-gradient(135deg,var(--accent-pink),var(--accent-orange));color:#fff;padding:14px 24px;border-radius:50px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:12px;box-shadow:0 8px 28px rgba(255,0,110,0.35);transition:transform .5s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;opacity:0}
+.install-banner.show{transform:translateX(-50%) translateY(0);opacity:1}
+.install-banner .close-btn{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--transition);flex-shrink:0}
+.install-banner .close-btn:hover{background:rgba(255,255,255,.4)}
+.install-banner .install-btn{background:#fff;color:var(--accent-pink);border:none;padding:8px 18px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;transition:var(--transition);flex-shrink:0}
+.install-banner .install-btn:hover{transform:scale(1.05);box-shadow:0 4px 12px rgba(0,0,0,.15)}
+
+.migrate-section{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:16px;border:1.5px solid rgba(255,0,110,0.04)}
+.migrate-section h3{font-size:16px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.migrate-btn-group{display:flex;gap:12px;flex-wrap:wrap}
+.migrate-info{font-size:13px;color:var(--text-muted);margin-top:12px;line-height:1.6}
+</style>
+</head>
+<body>
+
+<div id="authPage" class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="dot">&#x1F3E0;</div>
+      <h1>LifeHub</h1>
+      <p>生活枢纽 &#xB7; 管理你的衣食住行</p>
+    </div>
+    <div class="auth-tabs">
+      <button id="tabLogin" class="active" onclick="Auth.switchTab('login')">登录</button>
+      <button id="tabRegister" onclick="Auth.switchTab('register')">注册</button>
+    </div>
+    <div id="authError" class="auth-error"></div>
+    <form id="loginForm" onsubmit="Auth.loginEvent(event)">
+      <div class="form-group">
+        <label class="form-label">用户名</label>
+        <input type="text" class="input-field" id="loginUsername" placeholder="请输入用户名" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">密码</label>
+        <input type="password" class="input-field" id="loginPassword" placeholder="请输入密码" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" id="loginBtn">登 录</button>
+    </form>
+    <form id="registerForm" class="hidden" onsubmit="Auth.registerEvent(event)">
+      <div class="form-group">
+        <label class="form-label">用户名</label>
+        <input type="text" class="input-field" id="regUsername" placeholder="请输入用户名" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">邮箱</label>
+        <input type="email" class="input-field" id="regEmail" placeholder="请输入邮箱" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">昵称</label>
+        <input type="text" class="input-field" id="regNickname" placeholder="请输入昵称" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">密码</label>
+        <input type="password" class="input-field" id="regPassword" placeholder="请输入密码" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" id="registerBtn">注 册</button>
+    </form>
+  </div>
+</div>
+
+<div id="appLayout" class="hidden">
+  <div class="top-nav">
+    <div class="logo">
+      <div class="dot">&#x1F3E0;</div>
+      <span>LifeHub</span>
+    </div>
+    <div class="nav-actions">
+      <div class="user-chip" onclick="App.navigate('profile')">
+        <div class="avatar" id="navAvatar">U</div>
+        <span class="name" id="navNickname">用户</span>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="Auth.logout(); location.reload();">退出</button>
+    </div>
+  </div>
+
+  <div class="sidebar" id="sidebar">
+    <a class="nav-item" data-route="dashboard" onclick="App.navigate('dashboard')"><span class="ico">&#x1F4CA;</span> 仪表盘</a>
+    <a class="nav-item" data-route="wardrobe" onclick="App.navigate('wardrobe')"><span class="ico">&#x1F455;</span> 衣</a>
+    <a class="nav-item" data-route="food" onclick="App.navigate('food')"><span class="ico">&#x1F373;</span> 食</a>
+    <a class="nav-item" data-route="home" onclick="App.navigate('home')"><span class="ico">&#x1F3E0;</span> 住</a>
+    <a class="nav-item" data-route="travel" onclick="App.navigate('travel')"><span class="ico">&#x2708;&#xFE0F;</span> 行</a>
+    <a class="nav-item" data-route="profile" onclick="App.navigate('profile')"><span class="ico">&#x1F464;</span> 我的</a>
+  </div>
+
+  <div class="app-body">
+    <div class="main-content" id="mainContent"></div>
+  </div>
+
+  <div class="bottom-nav" id="bottomNav">
+    <a class="tab" data-route="dashboard" onclick="App.navigate('dashboard')"><span class="ico">&#x1F4CA;</span>仪表盘</a>
+    <a class="tab" data-route="wardrobe" onclick="App.navigate('wardrobe')"><span class="ico">&#x1F455;</span>衣</a>
+    <a class="tab" data-route="food" onclick="App.navigate('food')"><span class="ico">&#x1F373;</span>食</a>
+    <a class="tab" data-route="home" onclick="App.navigate('home')"><span class="ico">&#x1F3E0;</span>住</a>
+    <a class="tab" data-route="travel" onclick="App.navigate('travel')"><span class="ico">&#x2708;&#xFE0F;</span>行</a>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay" onclick="Modal.close(event)">
+  <div class="modal" id="modalBox">
+    <div class="modal-header">
+      <h3 id="modalTitle">标题</h3>
+      <button class="modal-close" onclick="Modal.hide()">&#x2715;</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer" id="modalFooter"></div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<div class="install-banner" id="installBanner">
+  <span>&#x1F3E0; 安装 LifeHub 到桌面</span>
+  <button class="install-btn" onclick="PWA.install()">安装</button>
+  <div class="close-btn" onclick="PWA.dismiss()">&#x2715;</div>
+</div>
+
+
+<script>
+// ===== DB (localStorage) =====
+const DB = {
+  prefix: 'lifehub_',
+  getStoreName(userId, collection) { return this.prefix + userId + '_' + collection; },
+  getCollection(userId, collection) {
+    const key = this.getStoreName(userId, collection);
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : [];
+  },
+  saveCollection(userId, collection, data) {
+    localStorage.setItem(this.getStoreName(userId, collection), JSON.stringify(data));
+  },
+  insert(userId, collection, item) {
+    const data = this.getCollection(userId, collection);
+    item.id = item.id || Date.now() + Math.floor(Math.random() * 1000);
+    item.createdAt = item.createdAt || new Date().toISOString();
+    item.updatedAt = new Date().toISOString();
+    data.push(item);
+    this.saveCollection(userId, collection, data);
+    return item;
+  },
+  update(userId, collection, id, updates) {
+    const data = this.getCollection(userId, collection);
+    const idx = data.findIndex(i => i.id == id);
+    if (idx === -1) return null;
+    data[idx] = { ...data[idx], ...updates, updatedAt: new Date().toISOString() };
+    this.saveCollection(userId, collection, data);
+    return data[idx];
+  },
+  delete(userId, collection, id) {
+    let data = this.getCollection(userId, collection);
+    data = data.filter(i => i.id != id);
+    this.saveCollection(userId, collection, data);
+  },
+  getById(userId, collection, id) {
+    const data = this.getCollection(userId, collection);
+    return data.find(i => i.id == id) || null;
+  }
+};
+
+// ===== Auth (local) =====
+const Auth = {
+  usersKey: 'lifehub_users',
+  currentUserKey: 'lifehub_current_user',
+  switchTab(tab) {
+    const tL = document.getElementById('tabLogin');
+    const tR = document.getElementById('tabRegister');
+    const fL = document.getElementById('loginForm');
+    const fR = document.getElementById('registerForm');
+    const err = document.getElementById('authError');
+    err.classList.remove('show');
+    if (tab === 'login') {
+      tL.classList.add('active'); tR.classList.remove('active');
+      fL.classList.remove('hidden'); fR.classList.add('hidden');
+    } else {
+      tR.classList.add('active'); tL.classList.remove('active');
+      fR.classList.remove('hidden'); fL.classList.add('hidden');
+    }
+  },
+  showError(msg) {
+    const err = document.getElementById('authError');
+    err.textContent = msg; err.classList.add('show');
+  },
+  getUsers() {
+    return JSON.parse(localStorage.getItem(this.usersKey) || '[]');
+  },
+  saveUsers(users) {
+    localStorage.setItem(this.usersKey, JSON.stringify(users));
+  },
+  getUser() {
+    const u = localStorage.getItem(this.currentUserKey);
+    return u ? JSON.parse(u) : null;
+  },
+  setUser(user) { localStorage.setItem(this.currentUserKey, JSON.stringify(user)); },
+  clearUser() { localStorage.removeItem(this.currentUserKey); },
+  check() { return this.getUser() !== null; },
+  redirectToLogin() {
+    document.getElementById('appLayout').classList.add('hidden');
+    document.getElementById('authPage').classList.remove('hidden');
+  },
+  register(username, email, nickname, password) {
+    if (!username || !password) return { error: '用户名和密码不能为空' };
+    const users = this.getUsers();
+    if (users.find(u => u.username === username)) return { error: '用户名已存在' };
+    const user = { id: Date.now(), username, email: email||'', nickname: nickname||username, password, createdAt: new Date().toISOString() };
+    users.push(user);
+    this.saveUsers(users);
+    const { password:_, ...safeUser } = user;
+    this.setUser(safeUser);
+    return { user: safeUser };
+  },
+  registerEvent(e) {
+    e.preventDefault();
+    const username = document.getElementById('regUsername').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const nickname = document.getElementById('regNickname').value.trim();
+    const password = document.getElementById('regPassword').value;
+    const result = this.register(username, email, nickname, password);
+    if (result.error) { this.showError(result.error); return; }
+    location.reload();
+  },
+  login(username, password) {
+    const users = this.getUsers();
+    const user = users.find(u => u.username === username);
+    if (!user || user.password !== password) return { error: '用户名或密码错误' };
+    const { password:_, ...safeUser } = user;
+    this.setUser(safeUser);
+    return { user: safeUser };
+  },
+  loginEvent(e) {
+    e.preventDefault();
+    const username = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const result = this.login(username, password);
+    if (result.error) { this.showError(result.error); return; }
+    location.reload();
+  },
+  logout() { this.clearUser(); }
+};
+
+// ===== API (local database operations) =====
+const API = {
+  _uid() { return Auth.getUser() ? Auth.getUser().id : null; },
+  profile() {
+    const u = Auth.getUser();
+    if (!u) return null;
+    return { username: u.username, email: u.email||'', nickname: u.nickname||u.username, avatar: u.avatar||'', bio: u.bio||'' };
+  },
+  updateProfile(data) {
+    const users = Auth.getUsers();
+    const idx = users.findIndex(u => u.id == this._uid());
+    if (idx === -1) return null;
+    users[idx] = { ...users[idx], ...data };
+    Auth.saveUsers(users);
+    const { password:_, ...safeUser } = users[idx];
+    Auth.setUser(safeUser);
+    return safeUser;
+  },
+  dashboard() {
+    const uid = this._uid();
+    const clothes = DB.getCollection(uid, 'clothes');
+    const recipes = DB.getCollection(uid, 'recipes');
+    const meals = DB.getCollection(uid, 'meals');
+    const expenses = DB.getCollection(uid, 'expenses');
+    const trips = DB.getCollection(uid, 'trips');
+    return { clothes, recipes, meals, expenses, trips };
+  },
+  clothes: {
+    list() { return DB.getCollection(API._uid(), 'clothes'); },
+    create(data) { return DB.insert(API._uid(), 'clothes', data); },
+    update(id, data) { return DB.update(API._uid(), 'clothes', id, data); },
+    delete(id) { DB.delete(API._uid(), 'clothes', id); }
+  },
+  outfits: {
+    list() { return DB.getCollection(API._uid(), 'outfits'); },
+    create(data) { return DB.insert(API._uid(), 'outfits', data); },
+    update(id, data) { return DB.update(API._uid(), 'outfits', id, data); },
+    delete(id) { DB.delete(API._uid(), 'outfits', id); }
+  },
+  recipes: {
+    list() { return DB.getCollection(API._uid(), 'recipes'); },
+    create(data) { return DB.insert(API._uid(), 'recipes', data); },
+    update(id, data) { return DB.update(API._uid(), 'recipes', id, data); },
+    delete(id) { DB.delete(API._uid(), 'recipes', id); }
+  },
+  meals: {
+    list() { return DB.getCollection(API._uid(), 'meals'); },
+    create(data) { return DB.insert(API._uid(), 'meals', data); },
+    update(id, data) { return DB.update(API._uid(), 'meals', id, data); },
+    delete(id) { DB.delete(API._uid(), 'meals', id); }
+  },
+  shopping: {
+    list() { return DB.getCollection(API._uid(), 'shopping'); },
+    create(data) { return DB.insert(API._uid(), 'shopping', data); },
+    update(id, data) { return DB.update(API._uid(), 'shopping', id, data); },
+    delete(id) { DB.delete(API._uid(), 'shopping', id); }
+  },
+  expenses: {
+    list() { return DB.getCollection(API._uid(), 'expenses'); },
+    create(data) { return DB.insert(API._uid(), 'expenses', data); },
+    update(id, data) { return DB.update(API._uid(), 'expenses', id, data); },
+    delete(id) { DB.delete(API._uid(), 'expenses', id); }
+  },
+  tasks: {
+    list() { return DB.getCollection(API._uid(), 'tasks'); },
+    create(data) { return DB.insert(API._uid(), 'tasks', data); },
+    update(id, data) { return DB.update(API._uid(), 'tasks', id, data); },
+    delete(id) { DB.delete(API._uid(), 'tasks', id); }
+  },
+  inventory: {
+    list() { return DB.getCollection(API._uid(), 'inventory'); },
+    create(data) { return DB.insert(API._uid(), 'inventory', data); },
+    update(id, data) { return DB.update(API._uid(), 'inventory', id, data); },
+    delete(id) { DB.delete(API._uid(), 'inventory', id); }
+  },
+  trips: {
+    list() { return DB.getCollection(API._uid(), 'trips'); },
+    create(data) { return DB.insert(API._uid(), 'trips', data); },
+    update(id, data) { return DB.update(API._uid(), 'trips', id, data); },
+    delete(id) { DB.delete(API._uid(), 'trips', id); }
+  },
+  events: {
+    list() { return DB.getCollection(API._uid(), 'events'); },
+    create(data) { return DB.insert(API._uid(), 'events', data); },
+    update(id, data) { return DB.update(API._uid(), 'events', id, data); },
+    delete(id) { DB.delete(API._uid(), 'events', id); }
+  },
+  packing: {
+    list() { return DB.getCollection(API._uid(), 'packing'); },
+    create(data) { return DB.insert(API._uid(), 'packing', data); },
+    update(id, data) { return DB.update(API._uid(), 'packing', id, data); },
+    delete(id) { DB.delete(API._uid(), 'packing', id); }
+  },
+  commute: {
+    list() { return DB.getCollection(API._uid(), 'commute'); },
+    create(data) { return DB.insert(API._uid(), 'commute', data); },
+    update(id, data) { return DB.update(API._uid(), 'commute', id, data); },
+    delete(id) { DB.delete(API._uid(), 'commute', id); }
+  },
+  suggestOutfit(weather, occasion) {
+    const clothes = DB.getCollection(API._uid(), 'clothes');
+    const tops = clothes.filter(c => c.category === '上衣' || c.category === 'top');
+    const bottoms = clothes.filter(c => c.category === '下装' || c.category === 'bottom');
+    const outerwears = clothes.filter(c => c.category === '外套' || c.category === 'outerwear');
+    const result = {};
+    if (tops.length) result.top = tops[Math.floor(Math.random()*tops.length)];
+    if (bottoms.length) result.bottom = bottoms[Math.floor(Math.random()*bottoms.length)];
+    if (outerwears.length && (weather === 'cold' || weather === 'cool')) result.outerwear = outerwears[Math.floor(Math.random()*outerwears.length)];
+    return result;
+  },
+  suggestRecipe(prefs) {
+    const recipes = DB.getCollection(API._uid(), 'recipes');
+    if (!recipes.length) return null;
+    let filtered = recipes;
+    if (prefs && prefs.category) filtered = recipes.filter(r => r.category === prefs.category);
+    if (prefs && prefs.tags && prefs.tags.length) filtered = filtered.filter(r => r.tags && r.tags.some(t => prefs.tags.includes(t)));
+    if (!filtered.length) filtered = recipes;
+    return filtered[Math.floor(Math.random()*filtered.length)];
+  },
+  exportAll() {
+    const uid = this._uid();
+    const data = { _meta: { exportedAt: new Date().toISOString(), version: 1 } };
+    ['clothes','outfits','recipes','meals','shopping','expenses','tasks','inventory','trips','events','packing','commute'].forEach(c => {
+      data[c] = DB.getCollection(uid, c);
+    });
+    data._profile = this.profile();
+    return data;
+  },
+  importAll(data) {
+    const uid = this._uid();
+    if (!uid) return false;
+    ['clothes','outfits','recipes','meals','shopping','expenses','tasks','inventory','trips','events','packing','commute'].forEach(c => {
+      if (data[c]) DB.saveCollection(uid, c, data[c]);
+    });
+    if (data._profile) this.updateProfile(data._profile);
+    return true;
+  }
+};
+
+// ===== SeedData =====
+const SeedData = {
+  seedIfEmpty() {
+    const uid = API._uid();
+    if (!uid) return;
+    const existingRecipes = DB.getCollection(uid, 'recipes');
+    if (existingRecipes.length > 0) return;
+    this.seedRecipes();
+    this.seedClothes();
+    this.seedExpenses();
+    this.seedTasks();
+    this.seedInventory();
+    this.seedTrips();
+    this.seedCommute();
+    this.seedShopping();
+  },
+  seedRecipes() {
+    const recipes = [
+      {name:'番茄炒蛋',category:'家常菜',tags:['快手','下饭'],difficulty:'简单',time:15,calories:250,ingredients:['番茄2个','鸡蛋3个','盐','糖','葱花'],steps:['鸡蛋打散加少许盐','番茄切块','热油炒鸡蛋盛出','再放番茄炒出汁','倒回鸡蛋翻匀'],notes:'经典家常菜，酸甜可口'},
+      {name:'红烧肉',category:'家常菜',tags:['硬菜','下饭'],difficulty:'中等',time:60,calories:450,ingredients:['五花肉500g','冰糖','生抽','老抽','料酒','葱姜八角'],steps:['五花肉切块焯水','炒糖色','放肉翻炒上色','加调料和水','大火烧开小火炖40分钟'],notes:'肥而不腻，入口即化'},
+      {name:'鱼香肉丝',category:'川菜',tags:['下饭','经典'],difficulty:'中等',time:25,calories:300,ingredients:['猪里脊200g','木耳','胡萝卜','青椒','泡椒','蒜末姜末'],steps:['肉切丝腌制','调鱼香汁','炒肉丝盛出','炒蔬菜','倒回肉丝淋鱼香汁'],notes:'酸甜微辣，经典川味'},
+      {name:'宫保鸡丁',category:'川菜',tags:['下饭','经典'],difficulty:'中等',time:25,calories:350,ingredients:['鸡胸肉300g','花生米','干辣椒','花椒','葱姜蒜'],steps:['鸡肉切丁腌制','炸花生米','炒花椒干辣椒','炒鸡丁','调味收汁'],notes:'麻辣鲜香，下饭神菜'},
+      {name:'麻婆豆腐',category:'川菜',tags:['下饭','麻辣'],difficulty:'简单',time:20,calories:200,ingredients:['豆腐1块','肉末100g','豆瓣酱','花椒粉','葱花'],steps:['豆腐切块焯水','炒肉末','加豆瓣酱','放豆腐烧入味','撒花椒粉葱花'],notes:'麻辣鲜香烫'},
+      {name:'回锅肉',category:'川菜',tags:['硬菜','下饭'],difficulty:'中等',time:30,calories:400,ingredients:['五花肉300g','青蒜','豆瓣酱','甜面酱','姜片'],steps:['五花肉整块煮熟切片','炒出灯盏窝','加豆瓣酱','加青蒜翻炒'],notes:'肥而不腻，经典川菜'},
+      {name:'水煮肉片',category:'川菜',tags:['硬菜','麻辣'],difficulty:'中等',time:30,calories:380,ingredients:['猪里脊300g','豆芽','白菜','豆瓣酱','干辣椒花椒'],steps:['配菜焯水铺底','肉片腌制','煮肉片','浇热油'],notes:'麻辣鲜香'},
+      {name:'糖醋里脊',category:'家常菜',tags:['酸甜','下饭'],difficulty:'中等',time:35,calories:380,ingredients:['猪里脊300g','番茄酱','白醋','糖','淀粉'],steps:['里脊切条腌制','裹淀粉炸','调糖醋汁','翻炒裹汁'],notes:'外酥里嫩，酸甜可口'},
+      {name:'酸辣土豆丝',category:'家常菜',tags:['快手','下饭','素菜'],difficulty:'简单',time:15,calories:150,ingredients:['土豆2个','干辣椒','花椒','醋','葱花'],steps:['土豆切丝泡水','炒花椒干辣椒','放土豆丝翻炒','加醋调味'],notes:'清脆爽口'},
+      {name:'青椒肉丝',category:'家常菜',tags:['快手','下饭'],difficulty:'简单',time:15,calories:250,ingredients:['猪里脊200g','青椒3个','姜蒜','生抽'],steps:['肉切丝腌制','青椒切丝','炒肉丝','加青椒翻炒'],notes:'简单快手'},
+      {name:'土豆炖牛肉',category:'家常菜',tags:['硬菜','炖菜'],difficulty:'中等',time:50,calories:350,ingredients:['牛腩400g','土豆2个','胡萝卜1个','八角桂皮','酱油'],steps:['牛肉焯水切块','炒糖色炖牛肉','加土豆胡萝卜','炖至软烂'],notes:'软烂入味，冬日暖菜'},
+      {name:'可乐鸡翅',category:'家常菜',tags:['甜口','下饭'],difficulty:'简单',time:25,calories:320,ingredients:['鸡翅10个','可乐1瓶','酱油','姜片'],steps:['鸡翅划口焯水','煎至两面金黄','倒可乐和酱油','收汁'],notes:'甜香可口，老少皆宜'},
+      {name:'蒜蓉蒸虾',category:'海鲜',tags:['宴客','清淡'],difficulty:'简单',time:15,calories:200,ingredients:['大虾10只','蒜末','粉丝','蒸鱼豉油'],steps:['虾开背去虾线','粉丝泡软铺底','虾摆盘铺蒜蓉','蒸6分钟淋豉油'],notes:'鲜美嫩滑'},
+      {name:'清蒸鲈鱼',category:'海鲜',tags:['清淡','宴客'],difficulty:'简单',time:20,calories:180,ingredients:['鲈鱼1条','葱姜','蒸鱼豉油','料酒'],steps:['鱼处理干净划刀','铺葱姜蒸8分钟','倒豉油浇热油'],notes:'原汁原味，鲜嫩'},
+      {name:'红烧排骨',category:'家常菜',tags:['硬菜','下饭'],difficulty:'中等',time:45,calories:380,ingredients:['排骨500g','冰糖','酱油','八角','葱姜'],steps:['排骨焯水','炒糖色','炖煮40分钟','收汁'],notes:'骨肉分离，咸甜适口'},
+      {name:'醋溜白菜',category:'家常菜',tags:['快手','素菜'],difficulty:'简单',time:10,calories:100,ingredients:['白菜半棵','干辣椒','醋','糖'],steps:['白菜切块','炒干辣椒','放白菜翻炒','加醋糖调味'],notes:'酸脆爽口'},
+      {name:'蛋炒饭',category:'主食',tags:['快手','一人食'],difficulty:'简单',time:10,calories:350,ingredients:['剩米饭1碗','鸡蛋2个','葱花','盐','酱油'],steps:['鸡蛋打散','炒蛋盛出','炒饭','加蛋和葱花调味'],notes:'粒粒分明，简单美味'},
+      {name:'葱油拌面',category:'主食',tags:['快手','一人食'],difficulty:'简单',time:15,calories:400,ingredients:['面条','小葱','酱油','糖','油'],steps:['炸葱油','煮面','拌葱油和调料'],notes:'葱香四溢'},
+      {name:'番茄牛腩',category:'家常菜',tags:['炖菜','下饭'],difficulty:'中等',time:60,calories:320,ingredients:['牛腩400g','番茄3个','土豆1个','洋葱','番茄酱'],steps:['牛腩焯水切块','炒番茄出汁','炖牛腩40分钟','加土豆炖软'],notes:'酸甜浓郁'},
+      {name:'蒜苔炒肉',category:'家常菜',tags:['快手','下饭'],difficulty:'简单',time:15,calories:250,ingredients:['蒜苔300g','猪肉150g','生抽','盐'],steps:['蒜苔切段','肉切丝腌制','炒肉丝','加蒜苔翻炒'],notes:'脆嫩爽口'},
+      {name:'干煸豆角',category:'家常菜',tags:['下饭','素菜'],difficulty:'中等',time:20,calories:200,ingredients:['四季豆400g','肉末','干辣椒','花椒','蒜末'],steps:['豆角煸至起皱','炒肉末辣椒','倒回豆角调味'],notes:'干香入味'},
+      {name:'香菇滑鸡',category:'家常菜',tags:['下饭','清淡'],difficulty:'简单',time:25,calories:280,ingredients:['鸡腿肉300g','香菇','蚝油','生抽','淀粉'],steps:['鸡肉腌制','香菇切片','蒸或焖煮','勾芡'],notes:'滑嫩鲜美'},
+      {name:'梅菜扣肉',category:'家常菜',tags:['硬菜','宴客'],difficulty:'困难',time:90,calories:450,ingredients:['五花肉500g','梅菜','酱油','冰糖','八角'],steps:['五花肉煮至断生','炸皮至起泡','切片码碗','梅菜铺上蒸1小时'],notes:'肥而不腻，入口即化'},
+      {name:'蚂蚁上树',category:'川菜',tags:['快手','下饭'],difficulty:'简单',time:15,calories:300,ingredients:['粉丝2把','肉末100g','豆瓣酱','葱姜蒜'],steps:['粉丝泡软','炒肉末豆瓣酱','加粉丝焖煮'],notes:'麻辣鲜香'},
+      {name:'地三鲜',category:'东北菜',tags:['素菜','下饭'],difficulty:'中等',time:25,calories:250,ingredients:['茄子1个','土豆1个','青椒2个','酱油','蒜'],steps:['茄子和土豆切块炸','炒青椒','翻炒调味'],notes:'东北经典素菜'},
+      {name:'锅包肉',category:'东北菜',tags:['酸甜','硬菜'],difficulty:'困难',time:35,calories:420,ingredients:['猪里脊300g','胡萝卜','葱姜','糖醋汁','淀粉'],steps:['肉切片腌制','裹淀粉炸两遍','炒糖醋汁','翻炒裹汁'],notes:'外酥里嫩，酸甜可口'},
+      {name:'小鸡炖蘑菇',category:'东北菜',tags:['炖菜','硬菜'],difficulty:'中等',time:50,calories:320,ingredients:['鸡半只','干蘑菇','粉条','葱姜八角'],steps:['鸡块焯水','炒糖色','加蘑菇炖煮','加粉条'],notes:'东北名菜'},
+      {name:'韭菜炒蛋',category:'家常菜',tags:['快手','素菜'],difficulty:'简单',time:10,calories:180,ingredients:['韭菜300g','鸡蛋4个','盐'],steps:['韭菜切段','鸡蛋炒散','加韭菜翻炒'],notes:'简单快手'},
+      {name:'芹菜炒百合',category:'家常菜',tags:['清淡','素菜'],difficulty:'简单',time:15,calories:150,ingredients:['芹菜300g','鲜百合','枸杞','盐'],steps:['芹菜切段','百合掰瓣','翻炒调味'],notes:'清爽健康'},
+      {name:'鱼香茄子',category:'川菜',tags:['下饭','经典'],difficulty:'中等',time:25,calories:250,ingredients:['茄子2个','肉末','豆瓣酱','糖醋汁'],steps:['茄子切条炸软','炒肉末豆瓣酱','调鱼香汁','翻炒'],notes:'鱼香浓郁'},
+      {name:'麻酱凉面',category:'主食',tags:['快手','夏日'],difficulty:'简单',time:15,calories:380,ingredients:['面条','芝麻酱','黄瓜丝','醋','蒜'],steps:['煮面过凉','调麻酱汁','拌匀'],notes:'凉爽开胃'},
+      {name:'酸辣汤',category:'汤品',tags:['开胃','快手'],difficulty:'简单',time:20,calories:150,ingredients:['豆腐','木耳','火腿','鸡蛋','醋','胡椒'],steps:['食材切丝','煮汤','勾芡','淋蛋液'],notes:'酸辣暖胃'},
+      {name:'紫菜蛋花汤',category:'汤品',tags:['快手','清淡'],difficulty:'简单',time:10,calories:80,ingredients:['紫菜','鸡蛋2个','虾皮','香油'],steps:['水烧开','放紫菜虾皮','淋蛋液','调味'],notes:'简单快手汤'},
+      {name:'冬瓜排骨汤',category:'汤品',tags:['炖菜','清淡'],difficulty:'中等',time:45,calories:200,ingredients:['排骨300g','冬瓜','葱姜','料酒'],steps:['排骨焯水','炖煮30分钟','加冬瓜煮软'],notes:'清淡养生'},
+      {name:'番茄蛋汤',category:'汤品',tags:['快手','清淡'],difficulty:'简单',time:10,calories:90,ingredients:['番茄1个','鸡蛋2个','葱花','香油'],steps:['番茄切块','煮汤','淋蛋液'],notes:'酸甜暖胃'},
+      {name:'黄瓜炒虾仁',category:'海鲜',tags:['清淡','快手'],difficulty:'简单',time:15,calories:180,ingredients:['虾仁200g','黄瓜1根','蒜末','盐'],steps:['虾仁腌制','黄瓜切片','翻炒调味'],notes:'清脆爽口'},
+      {name:'葱爆羊肉',category:'家常菜',tags:['硬菜','下饭'],difficulty:'中等',time:15,calories:320,ingredients:['羊肉300g','大葱2根','酱油','料酒'],steps:['羊肉切片腌制','大葱切段','大火爆炒'],notes:'葱香浓郁'},
+      {name:'京酱肉丝',category:'家常菜',tags:['硬菜','宴客'],difficulty:'中等',time:25,calories:350,ingredients:['猪里脊300g','甜面酱','豆皮','葱丝'],steps:['肉丝腌制滑炒','炒甜面酱','翻炒裹酱','配豆皮葱丝'],notes:'酱香浓郁'},
+      {name:'蒜蓉粉丝蒸扇贝',category:'海鲜',tags:['宴客','清淡'],difficulty:'中等',time:20,calories:200,ingredients:['扇贝6个','粉丝','蒜末','蒸鱼豉油'],steps:['粉丝泡软','扇贝处理','铺蒜蓉粉丝','蒸5分钟'],notes:'鲜美无比'},
+      {name:'白灼虾',category:'海鲜',tags:['清淡','快手'],difficulty:'简单',time:10,calories:150,ingredients:['大虾500g','姜片','蒸鱼豉油','葱'],steps:['水烧开加姜','放虾煮至变红','蘸豉油'],notes:'原汁原味'},
+      {name:'酱牛肉',category:'凉菜',tags:['硬菜','下酒'],difficulty:'中等',time:120,calories:280,ingredients:['牛腱肉500g','八角桂皮','酱油','冰糖','葱姜'],steps:['牛肉焯水','加香料炖煮1.5小时','浸泡入味','切片'],notes:'酱香浓郁'},
+      {name:'凉拌黄瓜',category:'凉菜',tags:['快手','夏日'],difficulty:'简单',time:5,calories:60,ingredients:['黄瓜2根','蒜末','醋','辣椒油'],steps:['黄瓜拍碎','调味拌匀'],notes:'清脆爽口'},
+      {name:'皮蛋豆腐',category:'凉菜',tags:['快手','夏日'],difficulty:'简单',time:5,calories:120,ingredients:['内酯豆腐1盒','皮蛋2个','葱花','酱油','香油'],steps:['豆腐切块','皮蛋切块','调味'],notes:'凉菜经典'},
+      {name:'口水鸡',category:'凉菜',tags:['麻辣','川菜'],difficulty:'中等',time:25,calories:280,ingredients:['鸡腿2个','辣椒油','花椒油','芝麻','花生碎'],steps:['鸡腿煮熟过凉','切片','淋红油调料'],notes:'麻辣鲜香'},
+      {name:'拍黄瓜',category:'凉菜',tags:['快手','素菜'],difficulty:'简单',time:5,calories:50,ingredients:['黄瓜2根','蒜末','醋','盐','香油'],steps:['黄瓜拍碎','调味拌匀'],notes:'家常凉菜'},
+      {name:'凉拌木耳',category:'凉菜',tags:['快手','素菜'],difficulty:'简单',time:10,calories:80,ingredients:['干木耳','洋葱','青椒','醋','辣椒油'],steps:['木耳泡发焯水','调味拌匀'],notes:'清脆健康'},
+      {name:'肉末茄子',category:'家常菜',tags:['下饭','快手'],difficulty:'简单',time:20,calories:250,ingredients:['茄子2个','肉末100g','蒜末','酱油'],steps:['茄子切条','炒肉末','加茄子焖煮'],notes:'下饭利器'},
+      {name:'番茄鸡蛋面',category:'主食',tags:['快手','一人食'],difficulty:'简单',time:15,calories:350,ingredients:['面条','番茄1个','鸡蛋2个','葱花'],steps:['炒番茄鸡蛋','煮面','浇卤'],notes:'经典快手面'},
+      {name:'牛肉面',category:'主食',tags:['一人食','汤面'],difficulty:'中等',time:60,calories:450,ingredients:['面条','牛腩200g','葱姜八角','辣椒油'],steps:['炖牛肉','煮面','浇汤和牛肉'],notes:'汤浓肉烂'},
+      {name:'炸酱面',category:'主食',tags:['一人食','经典'],difficulty:'中等',time:30,calories:420,ingredients:['面条','肉末','黄酱','黄瓜丝','豆芽'],steps:['炒肉酱','煮面','拌酱和菜码'],notes:'京味经典'},
+      {name:'饺子',category:'主食',tags:['经典','宴客'],difficulty:'中等',time:60,calories:380,ingredients:['面粉','猪肉馅','韭菜或白菜','葱姜','调料'],steps:['和面','调馅','包饺子','煮或蒸'],notes:'团圆必备'},
+      {name:'馄饨',category:'主食',tags:['快手','汤食'],difficulty:'中等',time:40,calories:320,ingredients:['馄饨皮','肉馅','紫菜','虾皮','葱花'],steps:['包馄饨','煮汤','调味'],notes:'皮薄馅大'},
+      {name:'扬州炒饭',category:'主食',tags:['快手','一人食'],difficulty:'简单',time:15,calories:380,ingredients:['米饭','鸡蛋','火腿','虾仁','青豆玉米'],steps:['炒蛋','炒配料','炒饭','调味'],notes:'色彩丰富'},
+      {name:'生煎包',category:'主食',tags:['早餐','经典'],difficulty:'困难',time:60,calories:300,ingredients:['面粉','肉馅','葱姜','芝麻'],steps:['发面包馅','煎至底部金黄','撒芝麻葱花'],notes:'底脆馅鲜'},
+      {name:'皮蛋瘦肉粥',category:'主食',tags:['早餐','养胃'],difficulty:'简单',time:40,calories:200,ingredients:['大米','皮蛋1个','瘦肉100g','姜丝葱花'],steps:['大米煮粥','加皮蛋瘦肉','调味'],notes:'绵滑养胃'}
+    ];
+    recipes.forEach(r => {
+      DB.insert(API._uid(), 'recipes', {
+        ...r,
+        image: '',
+        rating: Math.floor(Math.random()*3)+3
+      });
+    });
+  },
+  seedClothes() {
+    const clothes = [
+      {name:'白色T恤',category:'上衣',color:'白色',season:'四季',size:'M',brand:'优衣库',notes:'百搭基础款'},
+      {name:'黑色卫衣',category:'上衣',color:'黑色',season:'春秋冬',size:'L',brand:'Nike',notes:'运动休闲'},
+      {name:'蓝色衬衫',category:'上衣',color:'蓝色',season:'春秋',size:'M',brand:'MUJI',notes:'商务休闲'},
+      {name:'灰色毛衣',category:'上衣',color:'灰色',season:'秋冬',size:'L',brand:'UNIQLO',notes:'保暖舒适'},
+      {name:'条纹T恤',category:'上衣',color:'条纹',season:'春秋夏',size:'M',brand:'ZARA',notes:'法式风格'},
+      {name:'牛仔裤',category:'下装',color:'蓝色',season:'四季',size:'30',brand:'Levis',notes:'经典直筒'},
+      {name:'黑色休闲裤',category:'下装',color:'黑色',season:'四季',size:'30',brand:'Gap',notes:'百搭'},
+      {name:'卡其色工装裤',category:'下装',color:'卡其色',season:'春秋冬',size:'31',brand:'Dickies',notes:'工装风'},
+      {name:'灰色运动裤',category:'下装',color:'灰色',season:'秋冬',size:'L',brand:'Adidas',notes:'运动居家'},
+      {name:'黑色风衣',category:'外套',color:'黑色',season:'秋冬',size:'M',brand:'COS',notes:'帅气有型'},
+      {name:'卡其色风衣',category:'外套',color:'卡其色',season:'春秋冬',size:'M',brand:'Burberry',notes:'经典款'},
+      {name:'羽绒服',category:'外套',color:'黑色',season:'冬',size:'L',brand:'优衣库',notes:'轻薄保暖'},
+      {name:'牛仔外套',category:'外套',color:'蓝色',season:'春秋',size:'M',brand:'Levis',notes:'百搭单品'},
+      {name:'运动鞋',category:'鞋子',color:'白色',season:'四季',size:'42',brand:'Nike',notes:'日常穿搭'},
+      {name:'帆布鞋',category:'鞋子',color:'黑色',season:'春秋夏',size:'42',brand:'Vans',notes:'休闲百搭'},
+      {name:'皮鞋',category:'鞋子',color:'棕色',season:'四季',size:'42',brand:'ECCO',notes:'商务场合'}
+    ];
+    clothes.forEach(c => {
+      DB.insert(API._uid(), 'clothes', { ...c, image: '', wearCount: Math.floor(Math.random()*20) });
+    });
+  },
+  seedExpenses() {
+    const categories = ['餐饮','交通','购物','娱乐','生活','医疗','教育'];
+    const descs = { '餐饮':['早餐','午餐','晚餐','外卖','咖啡','零食'], '交通':['地铁','公交','打车','加油'], '购物':['衣服','日用品','电子产品','书'], '娱乐':['电影','游戏','音乐','聚餐'], '生活':['房租','水电','物业','宽带'], '医疗':['挂号','药费','体检'], '教育':['课程','书籍','培训'] };
+    const expenses = [];
+    const now = new Date();
+    for (let i = 0; i < 30; i++) {
+      const cat = categories[Math.floor(Math.random()*categories.length)];
+      const descArr = descs[cat];
+      const d = new Date(now);
+      d.setDate(d.getDate() - Math.floor(Math.random()*30));
+      expenses.push({
+        category: cat,
+        amount: Math.floor(Math.random()*200)+10,
+        description: descArr[Math.floor(Math.random()*descArr.length)],
+        date: d.toISOString().split('T')[0],
+        type: 'expense'
+      });
+    }
+    expenses.forEach(e => DB.insert(API._uid(), 'expenses', e));
+  },
+  seedTasks() {
+    const tasks = [
+      {title:'倒垃圾',done:Math.random()>0.5,dueDate:new Date().toISOString().split('T')[0],priority:'低'},
+      {title:'洗衣服',done:Math.random()>0.5,dueDate:new Date().toISOString().split('T')[0],priority:'中'},
+      {title:'拖地',done:false,dueDate:new Date().toISOString().split('T')[0],priority:'中'},
+      {title:'整理衣柜',done:false,dueDate:new Date(Date.now()+86400000).toISOString().split('T')[0],priority:'低'},
+      {title:'换洗床单',done:false,dueDate:new Date(Date.now()+2*86400000).toISOString().split('T')[0],priority:'低'},
+      {title:'清理冰箱',done:true,dueDate:new Date(Date.now()-86400000).toISOString().split('T')[0],priority:'低'}
+    ];
+    tasks.forEach(t => DB.insert(API._uid(), 'tasks', t));
+  },
+  seedInventory() {
+    const items = [
+      {name:'大米',category:'主食',quantity:'10kg',location:'厨房',expiryDate:'',notes:''},
+      {name:'食用油',category:'调味',quantity:'5L',location:'厨房',expiryDate:'',notes:''},
+      {name:'洗衣液',category:'清洁',quantity:'2瓶',location:'卫生间',expiryDate:'',notes:''},
+      {name:'纸巾',category:'日用',quantity:'20包',location:'储物间',expiryDate:'',notes:''},
+      {name:'酱油',category:'调味',quantity:'1瓶',location:'厨房',expiryDate:'',notes:'快用完了'},
+      {name:'牙膏',category:'日用',quantity:'2支',location:'卫生间',expiryDate:'',notes:''}
+    ];
+    items.forEach(i => DB.insert(API._uid(), 'inventory', i));
+  },
+  seedTrips() {
+    const trips = [
+      {title:'三亚海边度假',destination:'三亚',startDate:'2026-10-01',endDate:'2026-10-05',transport:'飞机',budget:5000,notes:'国庆假期出游'},
+      {title:'周末杭州游',destination:'杭州',startDate:'2026-09-20',endDate:'2026-09-21',transport:'高铁',budget:1500,notes:'西湖、灵隐寺'},
+      {title:'北京出差',destination:'北京',startDate:'2026-08-15',endDate:'2026-08-17',transport:'飞机',budget:3000,notes:'商务出差'}
+    ];
+    trips.forEach(t => DB.insert(API._uid(), 'trips', t));
+  },
+  seedCommute() {
+    const records = [];
+    const now = new Date();
+    for (let i = 0; i < 14; i++) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      if (d.getDay() === 0 || d.getDay() === 6) continue;
+      records.push({
+        date: d.toISOString().split('T')[0],
+        type: Math.random() > 0.5 ? '地铁' : '公交',
+        duration: Math.floor(Math.random()*40)+20,
+        cost: Math.random() > 0.5 ? 5 : 3,
+        notes: ''
+      });
+    }
+    records.forEach(r => DB.insert(API._uid(), 'commute', r));
+  },
+  seedShopping() {
+    const items = [
+      {name:'牛奶',quantity:'2盒',done:false,category:'食物'},
+      {name:'鸡蛋',quantity:'1盘',done:true,category:'食物'},
+      {name:'洗洁精',quantity:'1瓶',done:false,category:'日用'},
+      {name:'苹果',quantity:'1袋',done:false,category:'食物'},
+      {name:'垃圾袋',quantity:'1卷',done:true,category:'日用'}
+    ];
+    items.forEach(i => DB.insert(API._uid(), 'shopping', i));
+  }
+};
+
+// ===== Util =====
+const Util = {
+  fmt(date) {
+    const d = new Date(date);
+    const now = new Date();
+    const diff = (now - d) / 1000;
+    if (diff < 60) return '刚刚';
+    if (diff < 3600) return Math.floor(diff/60) + '分钟前';
+    if (diff < 86400) return Math.floor(diff/3600) + '小时前';
+    if (diff < 604800) return Math.floor(diff/86400) + '天前';
+    return d.toLocaleDateString('zh-CN', {month:'2-digit',day:'2-digit'});
+  },
+  fmtDate(date) {
+    if (!date) return '';
+    return new Date(date).toLocaleDateString('zh-CN', {year:'numeric',month:'2-digit',day:'2-digit'});
+  },
+  fmtMoney(n) {
+    return '￥' + Number(n||0).toFixed(2);
+  },
+  escape(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  },
+  debounce(fn, delay) {
+    let timer;
+    return function(...args) {
+      clearTimeout(timer);
+      timer = setTimeout(() => fn.apply(this, args), delay);
+    };
+  },
+  getSeason() {
+    const m = new Date().getMonth() + 1;
+    if (m >= 3 && m <= 5) return '春';
+    if (m >= 6 && m <= 8) return '夏';
+    if (m >= 9 && m <= 11) return '秋';
+    return '冬';
+  },
+  getWeatherText() {
+    const weathers = ['晴','多云','阴','小雨','中雨','大雨','小雪'];
+    return weathers[Math.floor(Math.random()*weathers.length)];
+  },
+  getGreeting() {
+    const h = new Date().getHours();
+    if (h < 6) return '夜深了';
+    if (h < 12) return '早上好';
+    if (h < 14) return '中午好';
+    if (h < 18) return '下午好';
+    if (h < 22) return '晚上好';
+    return '夜深了';
+  }
+};
+
+// ===== Toast =====
+const Toast = {
+  show(msg, type) {
+    const c = document.getElementById('toastContainer');
+    const t = document.createElement('div');
+    t.className = 'toast' + (type ? ' ' + type : '');
+    t.textContent = msg;
+    c.appendChild(t);
+    setTimeout(() => {
+      t.style.opacity = '0';
+      t.style.transform = 'translateY(-20px)';
+      t.style.transition = 'all .3s';
+      setTimeout(() => t.remove(), 300);
+    }, 2500);
+  },
+  success(msg) { this.show(msg, 'success'); },
+  error(msg) { this.show(msg, 'error'); }
+};
+
+// ===== Modal =====
+const Modal = {
+  show({title, body, footer}) {
+    document.getElementById('modalTitle').textContent = title || '';
+    document.getElementById('modalBody').innerHTML = body || '';
+    document.getElementById('modalFooter').innerHTML = footer || '';
+    document.getElementById('modalOverlay').classList.add('show');
+  },
+  hide() {
+    document.getElementById('modalOverlay').classList.remove('show');
+  },
+  close(e) {
+    if (e.target.id === 'modalOverlay') this.hide();
+  },
+  confirm(title, msg, onConfirm) {
+    this.show({
+      title,
+      body: '<p style="font-size:14px;color:var(--text-light);line-height:1.6">' + Util.escape(msg) + '</p>',
+      footer: '<button class="btn btn-light btn-sm" onclick="Modal.hide()">取消</button><button class="btn btn-primary btn-sm" id="confirmYesBtn">确认</button>'
+    });
+    document.getElementById('confirmYesBtn').onclick = () => { Modal.hide(); onConfirm(); };
+  }
+};
+
+// ===== App =====
+const App = {
+  currentRoute: 'dashboard',
+  init() {
+    SeedData.seedIfEmpty();
+    const user = Auth.getUser();
+    if (user) {
+      const avatar = user.nickname ? user.nickname.charAt(0).toUpperCase() : user.username.charAt(0).toUpperCase();
+      document.getElementById('navAvatar').textContent = avatar;
+      document.getElementById('navNickname').textContent = user.nickname || user.username;
+    }
+    this.navigate('dashboard');
+  },
+  navigate(route) {
+    this.currentRoute = route;
+    document.querySelectorAll('.nav-item, .tab').forEach(el => {
+      el.classList.toggle('active', el.dataset.route === route);
+    });
+    const content = document.getElementById('mainContent');
+    const pages = {
+      dashboard: Pages.dashboard,
+      wardrobe: Pages.wardrobe,
+      food: Pages.food,
+      home: Pages.home,
+      travel: Pages.travel,
+      profile: Pages.profile
+    };
+    const pageFn = pages[route];
+    if (pageFn) {
+      content.innerHTML = '<div class="loading"><div class="spinner"></div>加载中...</div>';
+      setTimeout(() => {
+        pageFn.call(Pages);
+        window.scrollTo(0, 0);
+      }, 50);
+    }
+  }
+};
+
+// ===== Pages =====
+const Pages = {
+  dashboard() {
+    const data = API.dashboard();
+    const clothesCount = data.clothes.length;
+    const recipesCount = data.recipes.length;
+    const mealsToday = data.meals.filter(m => m.date === new Date().toISOString().split('T')[0]).length;
+    const monthExpenses = data.expenses
+      .filter(e => { const d = new Date(e.date); const n = new Date(); return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear(); })
+      .reduce((s, e) => s + Number(e.amount||0), 0);
+    const tripsUpcoming = data.trips.filter(t => new Date(t.startDate) >= new Date());
+
+    const greeting = Util.getGreeting();
+    const user = Auth.getUser();
+    const nickname = user ? (user.nickname || user.username) : '';
+
+    const html = `
+      <div class="page-title">
+        <div>
+          <h2>${greeting}，${Util.escape(nickname)} 👋</h2>
+          <div class="subtitle">${new Date().toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'})}</div>
+        </div>
+      </div>
+      <div class="dash-grid" style="margin-bottom:20px">
+        <div class="dash-card c-clothes" onclick="App.navigate('wardrobe')">
+          <div class="label">我的衣橱</div>
+          <div class="value">${clothesCount}</div>
+          <div class="sub">件衣物</div>
+          <div class="bg-icon">👕</div>
+        </div>
+        <div class="dash-card c-food" onclick="App.navigate('food')">
+          <div class="label">菜谱库</div>
+          <div class="value">${recipesCount}</div>
+          <div class="sub">道菜谱</div>
+          <div class="bg-icon">🍳</div>
+        </div>
+        <div class="dash-card c-home" onclick="App.navigate('home')">
+          <div class="label">本月支出</div>
+          <div class="value">${Util.fmtMoney(monthExpenses)}</div>
+          <div class="sub">${new Date().getMonth()+1}月</div>
+          <div class="bg-icon">🏠</div>
+        </div>
+        <div class="dash-card c-travel" onclick="App.navigate('travel')">
+          <div class="label">即将出行</div>
+          <div class="value">${tripsUpcoming.length}</div>
+          <div class="sub">个行程</div>
+          <div class="bg-icon">✈️</div>
+        </div>
+      </div>
+      <div class="dash-section">
+        <h3><span class="ico">📊</span> 数据概览</h3>
+        <div class="stat-row">
+          <div class="stat-mini"><div class="label">今日餐食</div><div class="value">${mealsToday}</div><div class="unit">餐</div></div>
+          <div class="stat-mini"><div class="label">菜谱总数</div><div class="value">${recipesCount}</div><div class="unit">道</div></div>
+          <div class="stat-mini"><div class="label">衣物总数</div><div class="value">${clothesCount}</div><div class="unit">件</div></div>
+          <div class="stat-mini"><div class="label">待办家务</div><div class="value">${data.tasks ? data.tasks.filter(t=>!t.done).length : 0}</div><div class="unit">项</div></div>
+        </div>
+      </div>
+      <div class="dash-section">
+        <h3><span class="ico">🤖</span> AI 推荐 <span class="more" onclick="App.navigate('wardrobe')">更多 ></span></h3>
+        <div id="aiSuggestBox" style="display:flex;gap:12px;flex-wrap:wrap">
+          <div class="card" style="flex:1;min-width:200px;padding:16px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--primary-bg),rgba(255,209,102,0.08));border:1.5px solid rgba(255,0,110,0.06)">
+            <div style="font-size:13px;color:var(--text-muted);margin-bottom:8px">今日穿搭推荐</div>
+            <div id="suggestOutfit" style="font-size:15px;font-weight:700;color:var(--primary)">加载中...</div>
+          </div>
+          <div class="card" style="flex:1;min-width:200px;padding:16px;border-radius:var(--radius-sm);background:linear-gradient(135deg,rgba(6,214,160,0.08),rgba(0,187,249,0.08));border:1.5px solid rgba(6,214,160,0.06)">
+            <div style="font-size:13px;color:var(--text-muted);margin-bottom:8px">今日菜谱推荐</div>
+            <div id="suggestRecipe" style="font-size:15px;font-weight:700;color:var(--success)">加载中...</div>
+          </div>
+        </div>
+      </div>
+      <div class="dash-section">
+        <h3><span class="ico">🛒</span> 购物清单</h3>
+        <div id="dashShoppingList"></div>
+      </div>
+    `;
+    document.getElementById('mainContent').innerHTML = html;
+
+    // AI suggestions
+    const outfit = API.suggestOutfit('cool','casual');
+    let outfitText = '暂无数据';
+    if (outfit.top || outfit.bottom) {
+      const parts = [];
+      if (outfit.top) parts.push(outfit.top.name);
+      if (outfit.bottom) parts.push(outfit.bottom.name);
+      if (outfit.outerwear) parts.push(outfit.outerwear.name);
+      outfitText = parts.join(' + ') || '暂无数据';
+    }
+    document.getElementById('suggestOutfit').textContent = outfitText;
+
+    const recipe = API.suggestRecipe();
+    document.getElementById('suggestRecipe').textContent = recipe ? recipe.name : '暂无菜谱';
+
+    // Shopping list
+    const shopping = API.shopping.list().filter(s => !s.done).slice(0, 5);
+    const sList = document.getElementById('dashShoppingList');
+    if (shopping.length === 0) {
+      sList.innerHTML = '<div class="empty-state"><div class="icon">🛒</div><div class="title">购物清单已完成</div></div>';
+    } else {
+      sList.innerHTML = shopping.map(s => `
+        <div class="check-item">
+          <div class="checkbox" onclick="Pages.toggleShopping(${s.id})"></div>
+          <span class="check-label">${Util.escape(s.name)} (${Util.escape(s.quantity||'')})</span>
+          ${s.category ? `<span class="tag tag-primary">${Util.escape(s.category)}</span>` : ''}
+        </div>
+      `).join('');
+    }
+  },
+
+  toggleShopping(id) {
+    const item = API.shopping.list().find(s => s.id == id);
+    if (item) {
+      API.shopping.update(id, { done: true });
+      Toast.success('已标记为已购');
+      Pages.dashboard();
+    }
+  },
+
+  wardrobe() {
+    const clothes = API.clothes.list();
+    const categories = ['上衣','下装','外套','鞋子','配饰'];
+    const colors = ['白色','黑色','蓝色','灰色','红色','绿色','黄色','卡其色','条纹','其他'];
+    let filterCat = '', filterColor = '', searchKey = '';
+    const renderList = () => {
+      let filtered = clothes;
+      if (filterCat) filtered = filtered.filter(c => c.category === filterCat);
+      if (filterColor) filtered = filtered.filter(c => c.color === filterColor);
+      if (searchKey) filtered = filtered.filter(c => c.name.includes(searchKey) || (c.brand||'').includes(searchKey));
+
+      const grid = document.getElementById('wardrobeGrid');
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="empty-state"><div class="icon">👕</div><div class="title">暂无衣物</div><div class="desc">点击右上角添加衣物</div></div>';
+        return;
+      }
+      grid.innerHTML = `<div class="list-grid">${filtered.map(c => `
+        <div class="list-item">
+          <div class="item-header">
+            <div class="item-title">${Util.escape(c.name)}</div>
+            <div class="item-actions">
+              <button class="icon-btn" onclick="Pages.editClothing(${c.id})">✏️</button>
+              <button class="icon-btn danger" onclick="Pages.deleteClothing(${c.id})">🗑</button>
+            </div>
+          </div>
+          <div class="item-body">
+            ${c.category ? `<p>分类: ${Util.escape(c.category)}</p>` : ''}
+            ${c.color ? `<p>颜色: ${Util.escape(c.color)}</p>` : ''}
+            ${c.brand ? `<p>品牌: ${Util.escape(c.brand)}</p>` : ''}
+            ${c.season ? `<p>季节: ${Util.escape(c.season)}</p>` : ''}
+            ${c.size ? `<p>尺码: ${Util.escape(c.size)}</p>` : ''}
+          </div>
+          <div class="item-tags">
+            ${c.category ? `<span class="tag tag-primary">${Util.escape(c.category)}</span>` : ''}
+            ${c.color ? `<span class="tag tag-info">${Util.escape(c.color)}</span>` : ''}
+            ${c.season ? `<span class="tag tag-success">${Util.escape(c.season)}</span>` : ''}
+          </div>
+          <div class="item-footer">
+            <span style="font-size:12px;color:var(--text-muted)">穿着 ${c.wearCount||0} 次</span>
+          </div>
+        </div>
+      `).join('')}</div>`;
+    };
+
+    const html = `
+      <div class="page-title">
+        <div><h2>我的衣橱</h2><div class="subtitle">共 ${clothes.length} 件衣物</div></div>
+        <div class="actions">
+          <button class="btn btn-light btn-sm" onclick="Pages.suggestOutfit()">🤖 智能搭配</button>
+          <button class="btn btn-primary btn-sm" onclick="Pages.addClothing()">+ 添加衣物</button>
+        </div>
+      </div>
+      <div class="filter-bar">
+        <input type="text" placeholder="搜索..." id="wardrobeSearch" oninput="Pages.filterWardrobe(this.value)">
+        <select id="wardrobeCatFilter" onchange="Pages.filterWardrobeCat(this.value)">
+          <option value="">全部分类</option>
+          ${categories.map(c => `<option value="${c}">${c}</option>`).join('')}
+        </select>
+        <select id="wardrobeColorFilter" onchange="Pages.filterWardrobeColor(this.value)">
+          <option value="">全部颜色</option>
+          ${colors.map(c => `<option value="${c}">${c}</option>`).join('')}
+        </select>
+      </div>
+      <div id="wardrobeGrid"></div>
+    `;
+    document.getElementById('mainContent').innerHTML = html;
+    renderList();
+    Pages._wardrobeData = clothes;
+    Pages._renderWardrobeList = renderList;
+  },
+
+  filterWardrobe(val) { Pages._wardrobeSearch = val; if (Pages._renderWardrobeList) Pages._renderWardrobeList(); },
+  filterWardrobeCat(val) { Pages._wardrobeCat = val; if (Pages._renderWardrobeList) Pages._renderWardrobeList(); },
+  filterWardrobeColor(val) { Pages._wardrobeColor = val; if (Pages._renderWardrobeList) Pages._renderWardrobeList(); },
+
+  addClothing() {
+    Pages._clothingForm(null);
+  },
+  editClothing(id) {
+    const item = API.clothes.list().find(c => c.id == id);
+    Pages._clothingForm(item);
+  },
+  _clothingForm(item) {
+    const isEdit = !!item;
+    const categories = ['上衣','下装','外套','鞋子','配饰'];
+    const seasons = ['春','夏','秋','冬','春秋','春秋冬','四季'];
+    const body = `
+      <div class="form-group"><label class="form-label">名称</label><input type="text" class="input-field" id="cf_name" value="${item?Util.escape(item.name):''}" placeholder="如：白色T恤"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">分类</label><select class="input-field" id="cf_category">${categories.map(c=>`<option value="${c}" ${item&&item.category===c?'selected':''}>${c}</option>`).join('')}</select></div>
+        <div class="form-group"><label class="form-label">颜色</label><input type="text" class="input-field" id="cf_color" value="${item?Util.escape(item.color||''):''}" placeholder="如：白色"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">品牌</label><input type="text" class="input-field" id="cf_brand" value="${item?Util.escape(item.brand||''):''}" placeholder="如：优衣库"></div>
+        <div class="form-group"><label class="form-label">尺码</label><input type="text" class="input-field" id="cf_size" value="${item?Util.escape(item.size||''):''}" placeholder="如：M"></div>
+      </div>
+      <div class="form-group"><label class="form-label">季节</label><select class="input-field" id="cf_season">${seasons.map(s=>`<option value="${s}" ${item&&item.season===s?'selected':''}>${s}</option>`).join('')}</select></div>
+      <div class="form-group"><label class="form-label">备注</label><textarea class="input-field" id="cf_notes" placeholder="备注信息">${item?Util.escape(item.notes||''):''}</textarea></div>
+    `;
+    Modal.show({
+      title: isEdit ? '编辑衣物' : '添加衣物',
+      body,
+      footer: `<button class="btn btn-light btn-sm" onclick="Modal.hide()">取消</button><button class="btn btn-primary btn-sm" onclick="Pages._saveClothing(${item?item.id:'null'})">${isEdit?'保存':'添加'}</button>`
+    });
+  },
+  _saveClothing(id) {
+    const data = {
+      name: document.getElementById('cf_name').value.trim(),
+      category: document.getElementById('cf_category').value,
+      color: document.getElementById('cf_color').value.trim(),
+      brand: document.getElementById('cf_brand').value.trim(),
+      size: document.getElementById('cf_size').value.trim(),
+      season: document.getElementById('cf_season').value,
+      notes: document.getElementById('cf_notes').value.trim()
+    };
+    if (!data.name) { Toast.error('请输入名称'); return; }
+    if (id) {
+      API.clothes.update(id, data);
+      Toast.success('已更新');
+    } else {
+      API.clothes.create({ ...data, wearCount: 0, image: '' });
+      Toast.success('已添加');
+    }
+    Modal.hide();
+    Pages.wardrobe();
+  },
+  deleteClothing(id) {
+    Modal.confirm('删除衣物', '确定要删除这件衣物吗？此操作不可撤销。', () => {
+      API.clothes.delete(id);
+      Toast.success('已删除');
+      Pages.wardrobe();
+    });
+  },
+  suggestOutfit() {
+    const season = Util.getSeason();
+    const result = API.suggestOutfit(season === '冬' ? 'cold' : 'cool', 'casual');
+    let parts = [];
+    if (result.top) parts.push('👕 ' + result.top.name);
+    if (result.bottom) parts.push('👖 ' + result.bottom.name);
+    if (result.outerwear) parts.push('🧥 ' + result.outerwear.name);
+    const text = parts.length ? parts.join('<br>') : '暂无足够的衣物数据';
+    Modal.show({
+      title: '🤖 今日穿搭推荐',
+      body: `<div style="padding:8px 0"><p style="font-size:14px;color:var(--text-muted);margin-bottom:12px">根据当前季节(${season})随机推荐：</p><div style="font-size:16px;font-weight:600;line-height:2">${text}</div></div>`,
+      footer: `<button class="btn btn-light btn-sm" onclick="Modal.hide()">关闭</button><button class="btn btn-primary btn-sm" onclick="Modal.hide();Pages.suggestOutfit()">换一套</button>`
+    });
+  },
+
+  food() {
+    const recipes = API.recipes.list();
+    const meals = API.meals.list();
+    const shopping = API.shopping.list();
+    const todayStr = new Date().toISOString().split('T')[0];
+    const todayMeals = meals.filter(m => m.date === todayStr);
+
+    const html = `
+      <div class="page-title">
+        <div><h2>美食天地</h2><div class="subtitle">${recipes.length} 道菜谱 · 今日 ${todayMeals.length} 餐</div></div>
+        <div class="actions">
+          <button class="btn btn-light btn-sm" onclick="Pages.suggestRecipe()">🤖 推荐菜谱</button>
+          <button class="btn btn-primary btn-sm" onclick="Pages.addRecipe()">+ 添加菜谱</button>
+        </div>
+      </div>
+      <div class="dash-grid" style="margin-bottom:20px">
+        <div class="dash-card c-food" style="background:linear-gradient(135deg,#FF006E,#8338EC)" onclick="document.getElementById('recipeListSection').scrollIntoView({behavior:'smooth'})">
+          <div class="label">菜谱库</div><div class="value">${recipes.length}</div><div class="sub">道菜谱</div><div class="bg-icon">📖</div>
+        </div>
+        <div class="dash-card c-food" style="background:linear-gradient(135deg,#FFD166,#FB5607)" onclick="Pages.addMeal()">
+          <div class="label">今日餐食</div><div class="value">${todayMeals.length}</div><div class="sub">已记录</div><div class="bg-icon">🍽️</div>
+        </div>
+        <div class="dash-card c-food" style="background:linear-gradient(135deg,#06D6A0,#00BBF9)" onclick="Pages.showShopping()">
+          <div class="label">购物清单</div><div class="value">${shopping.filter(s=>!s.done).length}</div><div class="sub">待购买</div><div class="bg-icon">🛒</div>
+        </div>
+      </div>
+
+      <div class="dash-section" id="recipeListSection">
+        <h3><span class="ico">📖</span> 菜谱库 <span class="more" onclick="Pages.addRecipe()">+ 添加</span></h3>
+        <div class="filter-bar">
+          <input type="text" placeholder="搜索菜谱..." id="recipeSearch" oninput="Pages.filterRecipes(this.value)">
+          <select id="recipeCatFilter" onchange="Pages.filterRecipesCat(this.value)">
+            <option value="">全部分类</option>
+            ${[...new Set(recipes.map(r=>r.category))].map(c=>`<option value="${Util.escape(c)}">${Util.escape(c)}</option>`).join('')}
+          </select>
+        </div>
+        <div id="recipeGrid"></div>
+      </div>
+
+      <div class="dash-section">
+        <h3><span class="ico">🍽️</span> 今日餐食 <span class="more" onclick="Pages.addMeal()">+ 记录</span></h3>
+        <div id="todayMealsList"></div>
+      </div>
+
+      <div class="dash-section">
+        <h3><span class="ico">🛒</span> 购物清单 <span class="more" onclick="Pages.addShopping()">+ 添加</span></h3>
+        <div id="shoppingList"></div>
+      </div>
+    `;
+    document.getElementById('mainContent').innerHTML = html;
+    Pages._recipes = recipes;
+    Pages._renderRecipes();
+    Pages._renderTodayMeals();
+    Pages._renderShopping();
+  },
+
+  _renderRecipes() {
+    const recipes = Pages._recipes || [];
+    const search = (Pages._recipeSearch || '').toLowerCase();
+    const cat = Pages._recipeCat || '';
+    let filtered = recipes;
+    if (search) filtered = filtered.filter(r => r.name.toLowerCase().includes(search) || (r.tags||[]).some(t=>t.includes(search)));
+    if (cat) filtered = filtered.filter(r => r.category === cat);
+    const grid = document.getElementById('recipeGrid');
+    if (filtered.length === 0) {
+      grid.innerHTML = '<div class="empty-state"><div class="icon">📖</div><div class="title">暂无菜谱</div></div>';
+      return;
+    }
+    grid.innerHTML = `<div class="list-grid">${filtered.map(r => `
+      <div class="list-item" onclick="Pages.viewRecipe(${r.id})">
+        <div class="item-header">
+          <div class="item-title">${Util.escape(r.name)}</div>
+          <div class="item-actions">
+            <button class="icon-btn" onclick="event.stopPropagation();Pages.editRecipe(${r.id})">✏️</button>
+            <button class="icon-btn danger" onclick="event.stopPropagation();Pages.deleteRecipe(${r.id})">🗑</button>
+          </div>
+        </div>
+        <div class="item-body">
+          ${r.time ? `<p>⏱️ ${r.time}分钟</p>` : ''}
+          ${r.difficulty ? `<p>📊 ${Util.escape(r.difficulty)}</p>` : ''}
+          ${r.calories ? `<p>🔥 ${r.calories}卡</p>` : ''}
+        </div>
+        <div class="item-tags">
+          <span class="tag tag-primary">${Util.escape(r.category)}</span>
+          ${(r.tags||[]).map(t=>`<span class="tag tag-warning">${Util.escape(t)}</span>`).join('')}
+        </div>
+      </div>
+    `).join('')}</div>`;
+  },
+
+  filterRecipes(val) { Pages._recipeSearch = val; Pages._renderRecipes(); },
+  filterRecipesCat(val) { Pages._recipeCat = val; Pages._renderRecipes(); },
+
+  viewRecipe(id) {
+    const r = API.recipes.list().find(x => x.id == id);
+    if (!r) return;
+    const body = `
+      <div class="recipe-detail">
+        <div class="detail-meta">
+          ${r.time?`<span class="detail-meta-item">⏱️ ${r.time}分钟</span>`:''}
+          ${r.difficulty?`<span class="detail-meta-item">📊 ${Util.escape(r.difficulty)}</span>`:''}
+          ${r.calories?`<span class="detail-meta-item">🔥 ${r.calories}卡</span>`:''}
+          ${r.category?`<span class="detail-meta-item">📁 ${Util.escape(r.category)}</span>`:''}
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-title">🥘 食材</div>
+          <ul class="detail-list">${(r.ingredients||[]).map(i=>`<li>${Util.escape(i)}</li>`).join('')}</ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-title">👨‍🍳 做法</div>
+          <ol class="detail-steps" style="padding-left:0">${(r.steps||[]).map((s,i)=>`<li><span class="step-num">${i+1}</span><span class="step-text">${Util.escape(s)}</span></li>`).join('')}</ol>
+        </div>
+        ${r.notes?`<div class="detail-section"><div class="detail-section-title">📝 小贴士</div><p style="font-size:14px;color:var(--text-light);line-height:1.6">${Util.escape(r.notes)}</p></div>`:''}
+      </div>
+    `;
+    Modal.show({
+      title: r.name,
+      body,
+      footer: `<button class="btn btn-light btn-sm" onclick="Modal.hide()">关闭</button><button class="btn btn-primary btn-sm" onclick="Modal.hide();Pages.addMealWithRecipe(${r.id})">加入今日餐食</button>`
+    });
+  },
+
+  addRecipe() { Pages._recipeForm(null); },
+  editRecipe(id) {
+    const r = API.recipes.list().find(x => x.id == id);
+    Pages._recipeForm(r);
+  },
+  _recipeForm(item) {
+    const isEdit = !!item;
+    const categories = ['家常菜','川菜','粤菜','东北菜','海鲜','凉菜','汤品','主食','甜点','其他'];
+    const body = `
+      <div class="form-group"><label class="form-label">菜名</label><input type="text" class="input-field" id="rf_name" value="${item?Util.escape(item.name):''}"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">分类</label><select class="input-field" id="rf_category">${categories.map(c=>`<option value="${c}" ${item&&item.category===c?'selected':''}>${c}</option>`).join('')}</select></div>
+        <div class="form-group"><label class="form-label">难度</label><select class="input-field" id="rf_difficulty"><option value="简单" ${item&&item.difficulty==='简单'?'selected':''}>简单</option><option value="中等" ${item&&item.difficulty==='中等'?'selected':''}>中等</option><option value="困难" ${item&&item.difficulty==='困难'?'selected':''}>困难</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">用时(分钟)</label><input type="number" class="input-field" id="rf_time" value="${item?item.time||'':''}"></div>
+        <div class="form-group"><label class="form-label">热量(卡)</label><input type="number" class="input-field" id="rf_calories" value="${item?item.calories||'':''}"></div>
+      </div>
+      <div class="form-group"><label class="form-label">标签(逗号分隔)</label><input type="text" class="input-field" id="rf_tags" value="${item?(item.tags||[]).join(','):''}" placeholder="如：快手,下饭"></div>
+      <div class="form-group"><label class="form-label">食材(每行一项)</label><textarea class="input-field" id="rf_ingredients" rows="4">${item?(item.ingredients||[]).join('\\n'):''}</textarea></div>
+      <div class="form-group"><label class="form-label">做法(每行一步)</label><textarea class="input-field" id="rf_steps" rows="5">${item?(item.steps||[]).join('\\n'):''}</textarea></div>
+      <div class="form-group"><label class="form-label">小贴士</label><textarea class="input-field" id="rf_notes" rows="2">${item?Util.escape(item.notes||''):''}</textarea></div>
+    `;
+    Modal.show({
+      title: isEdit ? '编辑菜谱' : '添加菜谱',
+      body,
+      footer: `<button class="btn btn-light btn-sm" onclick="Modal.hide()">取消</button><button class="btn btn-primary btn-sm" onclick="Pages._saveRecipe(${item?item.id:'null'})">${isEdit?'保存':'添加'}</button>`
+    });
+  },
+  _saveRecipe(id) {
+    const data = {
+      name: document.getElementById('rf_name').value.trim(),
+      category: document.getElementById('rf_category').value,
+      difficulty: document.getElementById('rf_difficulty').value,
+      time: parseInt(document.getElementById('rf_time').value) || 0,
+      calories: parseInt(document.getElementById('rf_calories').value) || 0,
+      tags: document.getElementById('rf_tags').value.split(',').map(t=>t.trim()).filter(Boolean),
+      ingredients: document.getElementById('rf_ingredients').value.split('\\n').map(t=>t.trim()).filter(Boolean),
+      steps: document.getElementById('rf_steps').value.split('\\n').map(t=>t.trim()).filter(Boolean),
+      notes: document.getElementById('rf_notes').value.trim()
+    };
+    if (!data.name) { Toast.error('请输入菜名'); return; }
+    if (id) { API.recipes.update(id, data); Toast.success('已更新'); }
+    else { API.recipes.create({ ...data, image: '', rating: 3 }); Toast.success('已添加'); }
+    Modal.hide();
+    Pages.food();
+  },
+  deleteRecipe(id) {
+    Modal.confirm('删除菜谱', '确定要删除这道菜谱吗？', () => {
+      API.recipes.delete(id);
+      Toast.success('已删除');
+      Pages.food();
+    });
+  },
+  suggestRecipe() {
+    const recipe = API.suggestRecipe();
+    if (!recipe) { Toast.error('暂无菜谱数据'); return; }
+    Pages.viewRecipe(recipe.id);
+  },
+
+  _renderTodayMeals() {
+    const meals = API.meals.list();
+    const todayStr = new Date().toISOString().split('T')[0];
+    const todayMeals = meals.filter(m => m.date === todayStr);
+    const el = document.getElementById('todayMealsList');
+    if (todayMeals.length === 0) {
+      el.innerHTML = '<div class="empty-state"><div class="icon">🍽️</div><div class="title">今日还没记录餐食</div></div>';
+      return;
+    }
+    el.innerHTML = todayMeals.map(m => `
+      <div class="list-item">
+        <div class="item-header">
+          <div class="item-title">${Util.escape(m.name)}</div>
+          <div class="item-actions">
+            <button class="icon-btn danger" onclick="Pages.deleteMeal(${m.id})">🗑</button>
+          </div>
+        </div>
+        <div class="item-body">
+          ${m.mealType?`<p>类型: ${Util.escape(m.mealType)}</p>`:''}
+          ${m.notes?`<p>备注: ${Util.escape(m.notes)}</p>`:''}
+        </div>
+        <div class="item-tags">
+          ${m.mealType?`<span class="tag tag-primary">${Util.escape(m.mealType)}</span>`:''}
+        </div>
+      </div>
+    `).join('');
+  },
+
+  addMeal() {
+    const todayStr = new Date().toISOString().split('T')[0];
+    const recipes = API.recipes.list();
+    const body = `
+      <div class="form-group"><label class="form-label">菜名</label><input type="text" class="input-field" id="mf_name" placeholder="如：番茄炒蛋" list="recipeDatalist"></div>
+      <datalist id="recipeDatalist">${recipes.map(r=>`<option value="${Util.escape(r.name)}">`).join('')}</datalist>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">餐次</label><select class="input-field" id="mf_mealType"><option value="早餐">早餐</option><option value="午餐">午餐</option><option value="晚餐">晚餐</option><option value="加餐">加餐</option></select></div>
+        <div class="form-group"><label class="form-label">日期</label><input type="date" class="input-field" id="mf_date" value="${todayStr}"></div>
+      </div>
+      <div class="form-group"><label class="form-label">备注</label><textarea class="input-field" id="mf_notes" rows="2"></textarea></div>
+    `;
+    Modal.show({
+      title: '记录餐食',
+      body,
+      footer: `<button class="btn btn-light btn-sm" onclick="Modal.hide()">取消</button><button class="btn btn-primary btn-sm" onclick="Pages._saveMeal()">记录</button>`
+    });
+  },
+  addMealWithRecipe(recipeId) {
+    const recipe = API.recipes.list().find(r => r.id == recipeId);
+    const todayStr = new Date().toISOString().split('T')[0];
+    const body = `
+      <div class="form-group"><label class="form-label">菜名</label><input type="text" class="input-field" id="mf_name" value="${recipe?Util.escape(recipe.name):''}" readonly></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">餐次</label><select class="input-field" id="mf_mealType"><option value="早餐">早餐</option><option value="午餐">午餐</option><option value="晚餐">晚餐</option><option value="加餐">加餐</option></select></div>
+        <div class="form-group"><label class="form-label">日期</label><input type="date" class="input-field" id="mf_date" value="${todayStr}"></div>
+      </div>
+      <div class="form-group"><label class="form-label">备注</label><textarea class="input-field" id="mf_notes" rows="2"></textarea></div>
+    `;
+    Modal.show({
+      title: '记录餐食',
+      body,
+      footer: `<button class="btn btn-light btn-sm" onclick="Modal.hide()">取消</button><button class="btn btn-primary btn-sm" onclick="Pages._saveMeal()">记录</button>`
+    });
+  },
+  _saveMeal() {
+    const data = {
+      name: document.getElementById('mf_name').value.trim(),
+      mealType: document.getElementById('mf_mealType').value,
+      date: document.getElementById('mf_date').value,
+      notes: document.getElementById('mf_notes').value.trim()
+    };
+    if (!data.name) { Toast.error('请输入菜名'); return; }
+    API.meals.create(data);
+    Toast.success('已记录');
+    Modal.hide();
+    Pages._renderTodayMeals();
+  },
+  deleteMeal(id) {
+    API.meals.delete(id);
+    Toast.success('已删除');
+    Pages._renderTodayMeals();
+  },
+
+  _renderShopping() {
+    const items = API.shopping.list();
+    const el = document.getElementById('shoppingList');
+    if (items.length === 0) {
+      el.innerHTML = '<div class="empty-state"><div class="icon">🛒</div><div class="title">购物清单为空</div></div>';
+      return;
+    }
+    el.innerHTML = items.map(s => `
+      <div class="check-item ${s.done?'done':''}">
+        <div class="checkbox ${s.done?'checked':''}" onclick="Pages.toggleShoppingItem(${s.id})"></div>
+        <span class="check-label">${Util.escape(s.name)} ${s.quantity?'('+Util.escape(s.quantity)+')':''}</span>
+        ${s.category?`<span class="tag tag-primary">${Util.escape(s.category)}</span>`:''}
+        <button class="icon-btn danger" onclick="Pages.deleteShopping(${s.id})">🗑</button>
+      </div>
+    `).join('');
+  },
+  addShopping() {
+    const body = `
+      <div class="form-group"><label class="form-label">名称</label><input type="text" class="input-field" id="sf_name" placeholder="如：牛奶"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">数量</label><input type="text" class="input-field" id="sf_quantity" placeholder="如：2盒"></div>
+        <div class="form-group"><label class="form-label">分类</label><select class="input-field" id="sf_category"><option value="食物">食物</option><option value="日用">日用</option><option value="其他">其他</option></select></div>
+      </div>
+    `;
+    Modal.show({
+      title: '添加购物项',
+      body,
+      footer: `<button class="btn btn-light btn-sm" onclick="Modal.hide()">取消</button><button class="btn btn-primary btn-sm" onclick="Pages._saveShopping()">添加</button>`
+    });
+  },
+  _saveShopping() {
+    const data = {
+      name: document.getElementById('sf_name').value.trim(),
+      quantity: document.getElementById('sf_quantity').value.trim(),
+      category: document.getElementById('sf_category').value,
+      done: false
+    };
+    if (!data.name) { Toast.error('请输入名称'); return; }
+    API.shopping.create(data);
+    Toast.success('已添加');
+    Modal.hide();
+    Pages._renderShopping();
+  },
+  toggleShoppingItem(id) {
+    const item = API.shopping.list().find(s => s.id == id);
+    if (item) {
+      API.shopping.update(id, { done: !item.done });
+      Pages._renderShopping();
+    }
+  },
+  deleteShopping(id) {
+    API.shopping.delete(id);
+    Toast.success('已删除');
+    Pages._renderShopping();
+  },
+  showShopping() {
+    document.getElementById('shoppingList').scrollIntoView({ behavior: 'smooth' });
+  },
+
+  home() {
+    const expenses = API.expenses.list();
+    const tasks = API.tasks.list();
+    const inventory = API.inventory.list();
+    const now = new Date();
+    const monthExpenses = expenses.filter(e => {
+      const d = new Date(e.date);
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    });
+    const totalExpense = monthExpenses.reduce((s,e)=>s+Number(e.amount||0),0);
+    const byCategory = {};
+    monthExpenses.forEach(e => { byCategory[e.category] = (byCategory[e.category]||0) + Number(e.amount||0); });
+
+    const html = `
+      <div class="page-title">
+        <div><h2>居家生活</h2><div class="subtitle">记账 · 家务 · 库存</div></div>
+        <div class="actions">
+          <button class="btn btn-primary btn-sm" onclick="Pages.addExpense()">+ 记一笔</button>
+        </div>
+      </div>
+
+      <div class="dash-section">
+        <h3><span class="ico">💰</span> 本月支出 ${Util.fmtMoney(totalExpense)}</h3>
+        <div class="stat-row">
+          ${Object.entries(byCategory).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([cat,amt])=>`
+            <div class="stat-mini">
+              <div class="label">${Util.escape(cat)}</div>
+              <div class="value">${Util.fmtMoney(amt)}</div>
+            </div>
+          `).join('') || '<div class="stat-mini"><div class="label">暂无数据</div><div class="value">--</div></div>'}
+        </div>
+        <div class="chart-container" id="expenseChart"></div>
+      </div>
+
+      <div class="dash-section">
+        <h3><span class="ico">📝</span> 家务待办 <span class="more" onclick="Pages.addTask()">+ 添加</span></h3>
+        <div id="taskList"></div>
+      </div>
+
+      <div class="dash-section">
+        <h3><span class="ico">📦</span> 库存管理 <span class="more" onclick="Pages.addInventory()">+ 添加</span></h3>
+        <div id="inventoryList"></div>
+      </div>
+    `;
+    document.getElementById('mainContent').innerHTML = html;
+    Pages._renderExpenseChart(byCategory);
+    Pages._renderTasks();
+    Pages._renderInventory();
+  },
+
+  _renderExpenseChart(byCategory) {
+    const entries = Object.entries(byCategory).sort((a,b)=>b[1]-a[1]);
+    const maxVal = Math.max(...entries.map(e=>e[1]), 1);
+    const chart = document.getElementById('expenseChart');
+    if (entries.length === 0) {
+      chart.innerHTML = '<div class="empty-state"><div class="icon">📊</div><div class="title">暂无支出数据</div></div>';
+      return;
+    }
+    chart.innerHTML = entries.map(([cat,amt])=>`
+      <div class="chart-bar-wrap">
+        <div class="chart-bar" style="height:${(amt/maxVal*160)+10}px">
+          <span class="tip">${Util.fmtMoney(amt)}</span>
+        </div>
+        <div class="label">${Util.escape(cat)}</div>
+      </div>
+    `).join('');
+  },
+
+  addExpense() {
+    const todayStr = new Date().toISOString().split('T')[0];
+    const categories = ['餐饮','交通','购物','娱乐','生活','医疗','教育','其他'];
+    const body = `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">分类</label><select class="input-field" id="ef_category">${categories.map(c=>`<option value="${c}">${c}</option>`).join('')}</select></div>
+        <div class="form-group"><label class="form-label">金额</label><input type="number" class="input-field" id="ef_amount" placeholder="0.00"></div>
+      </div>
+      <div class="form-group"><label class="form-label">描述</label><input type="text" class="input-field" id="ef_description" placeholder="如：午餐"></div>
+      <div class="form-group"><label class="form-label">日期</label><input type="date" class="input-field" id="ef_date" value="${todayStr}"></div>
+    `;
+    Modal.show({
+      title: '记一笔',
+      body,
+      footer: `<button class="btn btn-light btn-sm" onclick="Modal.hide()">取消</button><button class="btn btn-primary btn-sm" onclick="Pages._saveExpense()">保存</button>`
+    });
+  },
+  _saveExpense() {
+    const data = {
+      category: document.getElementById('ef_category').value,
+      amount: parseFloat(document.getElementById('ef_amount').value) || 0,
+      description: document.getElementById('ef_description').value.trim(),
+      date: document.getElementById('ef_date').value,
+      type: 'expense'
+    };
+    if (!data.amount) { Toast.error('请输入金额'); return; }
+    API.expenses.create(data);
+    Toast.success('已记录');
+    Modal.hide();
+    Pages.home();
+  },
+  deleteExpense(id) {
+    API.expenses.delete(id);
+    Toast.success('已删除');
+    Pages.home();
+  },
+
+  _renderTasks() {
+    const tasks = API.tasks.list();
+    const el = document.getElementById('taskList');
+    if (tasks.length === 0) {
+      el.innerHTML = '<div class="empty-state"><div class="icon">📝</div><div class="title">暂无待办</div></div>';
+      return;
+    }
+    el.innerHTML = tasks.map(t => `
+      <div class="check-item ${t.done?'done':''}">
+        <div class="checkbox ${t.done?'checked':''}" onclick="Pages.toggleTask(${t.id})"></div>
+        <div style="flex:1">
+          <div class="check-label">${Util.escape(t.title)}</div>
+          ${t.dueDate?`<div class="check-meta">截止: ${Util.fmtDate(t.dueDate)}</div>`:''}
+        </div>
+        ${t.priority?`<span class="tag ${t.priority==='高'?'tag-danger':t.priority==='中'?'tag-warning':'tag-gray'}">${Util.escape(t.priority)}</span>`:''}
+        <button class="icon-btn danger" onclick="Pages.deleteTask(${t.id})">🗑</button>
+      </div>
+    `).join('');
+  },
+  addTask() {
+    const todayStr = new Date().toISOString().split('T')[0];
+    const body = `
+      <div class="form-group"><label class="form-label">任务</label><input type="text" class="input-field" id="tf_title" placeholder="如：倒垃圾"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">截止日期</label><input type="date" class="input-field" id="tf_dueDate" value="${todayStr}"></div>
+        <div class="form-group"><label class="form-label">优先级</label><select class="input-field" id="tf_priority"><option value="低">低</option><option value="中" selected>中</option><option value="高">高</option></select></div>
+      </div>
+    `;
+    Modal.show({
+      title: '添加待办',
+      body,
+      footer: `<button class="btn btn-light btn-sm" onclick="Modal.hide()">取消</button><button class="btn btn-primary btn-sm" onclick="Pages._saveTask()">添加</button>`
+    });
+  },
+  _saveTask() {
+    const data = {
+      title: document.getElementById('tf_title').value.trim(),
+      dueDate: document.getElementById('tf_dueDate').value,
+      priority: document.getElementById('tf_priority').value,
+      done: false
+    };
+    if (!data.title) { Toast.error('请输入任务'); return; }
+    API.tasks.create(data);
+    Toast.success('已添加');
+    Modal.hide();
+    Pages._renderTasks();
+  },
+  toggleTask(id) {
+    const task = API.tasks.list().find(t => t.id == id);
+    if (task) {
+      API.tasks.update(id, { done: !task.done });
+      Pages._renderTasks();
+    }
+  },
+  deleteTask(id) {
+    API.tasks.delete(id);
+    Toast.success('已删除');
+    Pages._renderTasks();
+  },
+
+  _renderInventory() {
+    const items = API.inventory.list();
+    const el = document.getElementById('inventoryList');
+    if (items.length === 0) {
+      el.innerHTML = '<div class="empty-state"><div class="icon">📦</div><div class="title">暂无库存</div></div>';
+      return;
+    }
+    el.innerHTML = `<div class="list-grid">${items.map(i => `
+      <div class="list-item">
+        <div class="item-header">
+          <div class="item-title">${Util.escape(i.name)}</div>
+          <div class="item-actions">
+            <button class="icon-btn" onclick="Pages.editInventory(${i.id})">✏️</button>
+            <button class="icon-btn danger" onclick="Pages.deleteInventory(${i.id})">🗑</button>
+          </div>
+        </div>
+        <div class="item-body">
+          ${i.quantity?`<p>数量: ${Util.escape(i.quantity)}</p>`:''}
+          ${i.location?`<p>位置: ${Util.escape(i.location)}</p>`:''}
+          ${i.expiryDate?`<p>保质期: ${Util.fmtDate(i.expiryDate)}</p>`:''}
+        </div>
+        <div class="item-tags">
+          ${i.category?`<span class="tag tag-primary">${Util.escape(i.category)}</span>`:''}
+        </div>
+      </div>
+    `).join('')}</div>`;
+  },
+  addInventory() { Pages._inventoryForm(null); },
+  editInventory(id) {
+    const item = API.inventory.list().find(i => i.id == id);
+    Pages._inventoryForm(item);
+  },
+  _inventoryForm(item) {
+    const isEdit = !!item;
+    const categories = ['主食','调味','食材','清洁','日用','其他'];
+    const body = `
+      <div class="form-group"><label class="form-label">名称</label><input type="text" class="input-field" id="iv_name" value="${item?Util.escape(item.name):''}"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">分类</label><select class="input-field" id="iv_category">${categories.map(c=>`<option value="${c}" ${item&&item.category===c?'selected':''}>${c}</option>`).join('')}</select></div>
+        <div class="form-group"><label class="form-label">数量</label><input type="text" class="input-field" id="iv_quantity" value="${item?Util.escape(item.quantity||''):''}" placeholder="如：2瓶"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">位置</label><input type="text" class="input-field" id="iv_location" value="${item?Util.escape(item.location||''):''}" placeholder="如：厨房"></div>
+        <div class="form-group"><label class="form-label">保质期</label><input type="date" class="input-field" id="iv_expiryDate" value="${item?item.expiryDate||'':''}"></div>
+      </div>
+      <div class="form-group"><label class="form-label">备注</label><textarea class="input-field" id="iv_notes" rows="2">${item?Util.escape(item.notes||''):''}</textarea></div>
+    `;
+    Modal.show({
+      title: isEdit ? '编辑库存' : '添加库存',
+      body,
+      footer: `<button class="btn btn-light btn-sm" onclick="Modal.hide()">取消</button><button class="btn btn-primary btn-sm" onclick="Pages._saveInventory(${item?item.id:'null'})">${isEdit?'保存':'添加'}</button>`
+    });
+  },
+  _saveInventory(id) {
+    const data = {
+      name: document.getElementById('iv_name').value.trim(),
+      category: document.getElementById('iv_category').value,
+      quantity: document.getElementById('iv_quantity').value.trim(),
+      location: document.getElementById('iv_location').value.trim(),
+      expiryDate: document.getElementById('iv_expiryDate').value,
+      notes: document.getElementById('iv_notes').value.trim()
+    };
+    if (!data.name) { Toast.error('请输入名称'); return; }
+    if (id) { API.inventory.update(id, data); Toast.success('已更新'); }
+    else { API.inventory.create(data); Toast.success('已添加'); }
+    Modal.hide();
+    Pages._renderInventory();
+  },
+  deleteInventory(id) {
+    Modal.confirm('删除库存项', '确定要删除吗？', () => {
+      API.inventory.delete(id);
+      Toast.success('已删除');
+      Pages._renderInventory();
+    });
+  },
+
+  travel() {
+    const trips = API.trips.list();
+    const commute = API.commute.list();
+    const now = new Date();
+    const monthCommute = commute.filter(c => {
+      const d = new Date(c.date);
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    });
+    const totalCommuteCost = monthCommute.reduce((s,c)=>s+Number(c.cost||0),0);
+    const totalCommuteTime = monthCommute.reduce((s,c)=>s+Number(c.duration||0),0);
+
+    const html = `
+      <div class="page-title">
+        <div><h2>出行管理</h2><div class="subtitle">行程 · 通勤</div></div>
+        <div class="actions">
+          <button class="btn btn-primary btn-sm" onclick="Pages.addTrip()">+ 添加行程</button>
+        </div>
+      </div>
+
+      <div class="dash-grid" style="margin-bottom:20px">
+        <div class="dash-card c-travel" onclick="Pages.addTrip()">
+          <div class="label">行程</div><div class="value">${trips.length}</div><div class="sub">个行程</div><div class="bg-icon">✈️</div>
+        </div>
+        <div class="dash-card c-travel" style="background:linear-gradient(135deg,#06D6A0,#00BBF9)" onclick="Pages.addCommute()">
+          <div class="label">本月通勤</label><div class="value">${monthCommute.length}</div><div class="sub">次</div><div class="bg-icon">🚇</div>
+        </div>
+        <div class="dash-card c-travel" style="background:linear-gradient(135deg,#FFD166,#FB5607)" onclick="Pages.addCommute()">
+          <div class="label">通勤花费</div><div class="value">${Util.fmtMoney(totalCommuteCost)}</div><div class="sub">本月</div><div class="bg-icon">💰</div>
+        </div>
+      </div>
+
+      <div class="dash-section">
+        <h3><span class="ico">🗺️</span> 我的行程 <span class="more" onclick="Pages.addTrip()">+ 添加</span></h3>
+        <div id="tripList"></div>
+      </div>
+
+      <div class="dash-section">
+        <h3><span class="ico">🚇</span> 通勤记录 <span class="more" onclick="Pages.addCommute()">+ 记录</span></h3>
+        <div id="commuteList"></div>
+      </div>
+    `;
+    document.getElementById('mainContent').innerHTML = html;
+    Pages._renderTrips();
+    Pages._renderCommute();
+  },
+
+  _renderTrips() {
+    const trips = API.trips.list().sort((a,b)=>new Date(b.startDate)-new Date(a.startDate));
+    const el = document.getElementById('tripList');
+    if (trips.length === 0) {
+      el.innerHTML = '<div class="empty-state"><div class="icon">🗺️</div><div class="title">暂无行程</div></div>';
+      return;
+    }
+    el.innerHTML = `<div class="timeline">${trips.map(t => {
+      const isUpcoming = new Date(t.startDate) >= new Date();
+      return `
+      <div class="timeline-item">
+        <div class="tl-time">${Util.fmtDate(t.startDate)} - ${Util.fmtDate(t.endDate)}</div>
+        <div class="tl-title">${Util.escape(t.title)} ${isUpcoming?'<span class="tag tag-success">即将出发</span>':''}</div>
+        <div class="tl-desc">
+          📍 ${Util.escape(t.destination||'')} · 🚗 ${Util.escape(t.transport||'')}
+          ${t.budget?` · 💰 ${Util.fmtMoney(t.budget)}`:''}
+          ${t.notes?`<br>📝 ${Util.escape(t.notes)}`:''}
+        </div>
+        <div style="margin-top:8px;display:flex;gap:6px">
+          <button class="icon-btn" onclick="Pages.editTrip(${t.id})">✏️</button>
+          <button class="icon-btn danger" onclick="Pages.deleteTrip(${t.id})">🗑</button>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  },
+
+  addTrip() { Pages._tripForm(null); },
+  editTrip(id) {
+    const item = API.trips.list().find(t => t.id == id);
+    Pages._tripForm(item);
+  },
+  _tripForm(item) {
+    const isEdit = !!item;
+    const transports = ['飞机','高铁','火车','自驾','大巴','其他'];
+    const body = `
+      <div class="form-group"><label class="form-label">标题</label><input type="text" class="input-field" id="tp_title" value="${item?Util.escape(item.title):''}" placeholder="如：三亚度假"></div>
+      <div class="form-group"><label class="form-label">目的地</label><input type="text" class="input-field" id="tp_destination" value="${item?Util.escape(item.destination):''}" placeholder="如：三亚"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">出发日期</label><input type="date" class="input-field" id="tp_startDate" value="${item?item.startDate||'':''}"></div>
+        <div class="form-group"><label class="form-label">返回日期</label><input type="date" class="input-field" id="tp_endDate" value="${item?item.endDate||'':''}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">交通方式</label><select class="input-field" id="tp_transport">${transports.map(t=>`<option value="${t}" ${item&&item.transport===t?'selected':''}>${t}</option>`).join('')}</select></div>
+        <div class="form-group"><label class="form-label">预算</label><input type="number" class="input-field" id="tp_budget" value="${item?item.budget||'':''}"></div>
+      </div>
+      <div class="form-group"><label class="form-label">备注</label><textarea class="input-field" id="tp_notes" rows="2">${item?Util.escape(item.notes||''):''}</textarea></div>
+    `;
+    Modal.show({
+      title: isEdit ? '编辑行程' : '添加行程',
+      body,
+      footer: `<button class="btn btn-light btn-sm" onclick="Modal.hide()">取消</button><button class="btn btn-primary btn-sm" onclick="Pages._saveTrip(${item?item.id:'null'})">${isEdit?'保存':'添加'}</button>`
+    });
+  },
+  _saveTrip(id) {
+    const data = {
+      title: document.getElementById('tp_title').value.trim(),
+      destination: document.getElementById('tp_destination').value.trim(),
+      startDate: document.getElementById('tp_startDate').value,
+      endDate: document.getElementById('tp_endDate').value,
+      transport: document.getElementById('tp_transport').value,
+      budget: parseFloat(document.getElementById('tp_budget').value) || 0,
+      notes: document.getElementById('tp_notes').value.trim()
+    };
+    if (!data.title) { Toast.error('请输入标题'); return; }
+    if (id) { API.trips.update(id, data); Toast.success('已更新'); }
+    else { API.trips.create(data); Toast.success('已添加'); }
+    Modal.hide();
+    Pages._renderTrips();
+  },
+  deleteTrip(id) {
+    Modal.confirm('删除行程', '确定要删除这个行程吗？', () => {
+      API.trips.delete(id);
+      Toast.success('已删除');
+      Pages._renderTrips();
+    });
+  },
+
+  _renderCommute() {
+    const records = API.commute.list().sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,14);
+    const el = document.getElementById('commuteList');
+    if (records.length === 0) {
+      el.innerHTML = '<div class="empty-state"><div class="icon">🚇</div><div class="title">暂无通勤记录</div></div>';
+      return;
+    }
+    el.innerHTML = records.map(c => `
+      <div class="check-item">
+        <div style="flex:1">
+          <div class="check-label">${Util.escape(c.type||'')} · ${Util.fmtDate(c.date)}</div>
+          <div class="check-meta">⏱️ ${c.duration||0}分钟 · 💰 ${Util.fmtMoney(c.cost||0)}</div>
+        </div>
+        <button class="icon-btn danger" onclick="Pages.deleteCommute(${c.id})">🗑</button>
+      </div>
+    `).join('');
+  },
+
+  addCommute() {
+    const todayStr = new Date().toISOString().split('T')[0];
+    const body = `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">日期</label><input type="date" class="input-field" id="cm_date" value="${todayStr}"></div>
+        <div class="form-group"><label class="form-label">方式</label><select class="input-field" id="cm_type"><option value="地铁">地铁</option><option value="公交">公交</option><option value="打车">打车</option><option value="步行">步行</option><option value="骑行">骑行</option><option value="自驾">自驾</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">时长(分钟)</label><input type="number" class="input-field" id="cm_duration" placeholder="30"></div>
+        <div class="form-group"><label class="form-label">花费(元)</label><input type="number" class="input-field" id="cm_cost" placeholder="5"></div>
+      </div>
+    `;
+    Modal.show({
+      title: '记录通勤',
+      body,
+      footer: `<button class="btn btn-light btn-sm" onclick="Modal.hide()">取消</button><button class="btn btn-primary btn-sm" onclick="Pages._saveCommute()">记录</button>`
+    });
+  },
+  _saveCommute() {
+    const data = {
+      date: document.getElementById('cm_date').value,
+      type: document.getElementById('cm_type').value,
+      duration: parseInt(document.getElementById('cm_duration').value) || 0,
+      cost: parseFloat(document.getElementById('cm_cost').value) || 0
+    };
+    API.commute.create(data);
+    Toast.success('已记录');
+    Modal.hide();
+    Pages.travel();
+  },
+  deleteCommute(id) {
+    API.commute.delete(id);
+    Toast.success('已删除');
+    Pages._renderCommute();
+  },
+
+  profile() {
+    const user = API.profile();
+    const html = `
+      <div class="page-title">
+        <div><h2>我的</h2><div class="subtitle">个人资料 · 数据管理</div></div>
+      </div>
+
+      <div class="dash-section">
+        <h3><span class="ico">👤</span> 个人资料</h3>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+          <div class="avatar" style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--accent-pink),var(--accent-purple));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:24px">${(user.nickname||user.username||'U').charAt(0).toUpperCase()}</div>
+          <div>
+            <div style="font-size:18px;font-weight:700">${Util.escape(user.nickname||user.username)}</div>
+            <div style="font-size:14px;color:var(--text-muted)">@${Util.escape(user.username)}</div>
+            ${user.email?`<div style="font-size:13px;color:var(--text-muted)">${Util.escape(user.email)}</div>`:''}
+          </div>
+        </div>
+        <button class="btn btn-light btn-sm" onclick="Pages.editProfile()">编辑资料</button>
+      </div>
+
+      <div class="migrate-section">
+        <h3><span class="ico">💾</span> 数据管理</h3>
+        <div class="migrate-btn-group">
+          <button class="btn btn-light" onclick="Pages.exportData()">📥 导出数据</button>
+          <button class="btn btn-light" onclick="Pages.importData()">📤 导入数据</button>
+        </div>
+        <div class="migrate-info">
+          导出会下载包含所有数据的 JSON 文件。<br>
+          导入会从 JSON 文件恢复数据（将覆盖当前数据）。
+        </div>
+      </div>
+
+      <div class="dash-section">
+        <h3><span class="ico">📊</span> 数据统计</h3>
+        <div class="stat-row">
+          <div class="stat-mini"><div class="label">衣物</div><div class="value">${API.clothes.list().length}</div></div>
+          <div class="stat-mini"><div class="label">菜谱</div><div class="value">${API.recipes.list().length}</div></div>
+          <div class="stat-mini"><div class="label">餐食</div><div class="value">${API.meals.list().length}</div></div>
+          <div class="stat-mini"><div class="label">行程</div><div class="value">${API.trips.list().length}</div></div>
+        </div>
+      </div>
+
+      <div class="dash-section">
+        <h3><span class="ico">ℹ️</span> 关于</h3>
+        <div style="font-size:14px;color:var(--text-light);line-height:1.8">
+          <p><strong>LifeHub</strong> - 生活枢纽 PWA</p>
+          <p>管理你的衣食住行，数据本地存储，支持离线使用。</p>
+          <p style="color:var(--text-muted);margin-top:8px">版本 1.0.0</p>
+        </div>
+      </div>
+
+      <div class="dash-section" style="text-align:center">
+        <button class="btn btn-danger" onclick="Auth.logout();location.reload()">退出登录</button>
+      </div>
+    `;
+    document.getElementById('mainContent').innerHTML = html;
+  },
+
+  editProfile() {
+    const user = API.profile();
+    const body = `
+      <div class="form-group"><label class="form-label">昵称</label><input type="text" class="input-field" id="pf_nickname" value="${Util.escape(user.nickname||'')}"></div>
+      <div class="form-group"><label class="form-label">邮箱</label><input type="email" class="input-field" id="pf_email" value="${Util.escape(user.email||'')}"></div>
+      <div class="form-group"><label class="form-label">个人简介</label><textarea class="input-field" id="pf_bio" rows="3">${Util.escape(user.bio||'')}</textarea></div>
+    `;
+    Modal.show({
+      title: '编辑资料',
+      body,
+      footer: `<button class="btn btn-light btn-sm" onclick="Modal.hide()">取消</button><button class="btn btn-primary btn-sm" onclick="Pages._saveProfile()">保存</button>`
+    });
+  },
+  _saveProfile() {
+    const data = {
+      nickname: document.getElementById('pf_nickname').value.trim(),
+      email: document.getElementById('pf_email').value.trim(),
+      bio: document.getElementById('pf_bio').value.trim()
+    };
+    API.updateProfile(data);
+    Toast.success('资料已更新');
+    Modal.hide();
+    const user = Auth.getUser();
+    if (user) {
+      document.getElementById('navNickname').textContent = data.nickname || user.username;
+      document.getElementById('navAvatar').textContent = (data.nickname||user.username).charAt(0).toUpperCase();
+    }
+    Pages.profile();
+  },
+
+  exportData() {
+    const data = API.exportAll();
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `lifehub-backup-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    Toast.success('数据已导出');
+  },
+
+  importData() {
+    const body = `
+      <div style="padding:8px 0">
+        <p style="font-size:14px;color:var(--text-light);margin-bottom:16px">选择之前导出的 JSON 文件来恢复数据。</p>
+        <p style="font-size:13px;color:var(--danger);margin-bottom:16px">⚠️ 注意：导入会覆盖当前所有数据！</p>
+        <input type="file" id="importFile" accept=".json" style="margin-bottom:16px">
+      </div>
+    `;
+    Modal.show({
+      title: '导入数据',
+      body,
+      footer: `<button class="btn btn-light btn-sm" onclick="Modal.hide()">取消</button><button class="btn btn-primary btn-sm" onclick="Pages._doImport()">导入</button>`
+    });
+  },
+  _doImport() {
+    const fileInput = document.getElementById('importFile');
+    if (!fileInput.files.length) { Toast.error('请选择文件'); return; }
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const data = JSON.parse(e.target.result);
+        Modal.confirm('确认导入', '导入将覆盖当前所有数据，确定继续吗？', () => {
+          API.importAll(data);
+          Toast.success('数据导入成功');
+          Modal.hide();
+          Pages.profile();
+        });
+      } catch(err) {
+        Toast.error('文件解析失败，请检查文件格式');
+      }
+    };
+    reader.readAsText(file);
+  }
+};
+
+// ===== PWA =====
+const PWA = {
+  deferredPrompt: null,
+  init() {
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW registration failed:', err));
+      });
+    }
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      this.deferredPrompt = e;
+      this.showBanner();
+    });
+  },
+  showBanner() {
+    const banner = document.getElementById('installBanner');
+    if (banner) banner.classList.add('show');
+  },
+  dismiss() {
+    const banner = document.getElementById('installBanner');
+    if (banner) banner.classList.remove('show');
+    this.deferredPrompt = null;
+  },
+  install() {
+    if (!this.deferredPrompt) { Toast.info('请使用浏览器的"添加到主屏幕"功能安装'); return; }
+    this.deferredPrompt.prompt();
+    this.deferredPrompt.userChoice.then(() => {
+      this.deferredPrompt = null;
+      document.getElementById('installBanner').classList.remove('show');
+    });
+  }
+};
+
+// ===== Init =====
+(function init() {
+  PWA.init();
+  if (Auth.check()) {
+    document.getElementById('authPage').classList.add('hidden');
+    document.getElementById('appLayout').classList.remove('hidden');
+    App.init();
+  } else {
+    Auth.redirectToLogin();
+  }
+})();
+</script>
+</body>
+</html>
