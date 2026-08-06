@@ -338,6 +338,7 @@ select.input-field{cursor:pointer;-webkit-appearance:none;appearance:none;backgr
     <a class="nav-item" data-route="food" onclick="App.navigate('food')"><span class="ico">&#x1F373;</span> 食</a>
     <a class="nav-item" data-route="home" onclick="App.navigate('home')"><span class="ico">&#x1F3E0;</span> 住</a>
     <a class="nav-item" data-route="travel" onclick="App.navigate('travel')"><span class="ico">&#x2708;&#xFE0F;</span> 行</a>
+    <a class="nav-item" data-route="weather" onclick="App.navigate('weather')"><span class="ico">&#x2600;&#xFE0F;</span> 天气</a>
     <a class="nav-item" data-route="profile" onclick="App.navigate('profile')"><span class="ico">&#x1F464;</span> 我的</a>
   </div>
 
@@ -351,6 +352,7 @@ select.input-field{cursor:pointer;-webkit-appearance:none;appearance:none;backgr
     <a class="tab" data-route="food" onclick="App.navigate('food')"><span class="ico">&#x1F373;</span>食</a>
     <a class="tab" data-route="home" onclick="App.navigate('home')"><span class="ico">&#x1F3E0;</span>住</a>
     <a class="tab" data-route="travel" onclick="App.navigate('travel')"><span class="ico">&#x2708;&#xFE0F;</span>行</a>
+    <a class="tab" data-route="weather" onclick="App.navigate('weather')"><span class="ico">&#x2600;&#xFE0F;</span>天气</a>
   </div>
 </div>
 
@@ -625,6 +627,60 @@ const API = {
         return null;
       }
     },
+    async fetchFullWeather(lat, lon) {
+      try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&hourly=temperature_2m,weather_code,relative_humidity_2m&daily=weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,wind_speed_10m_max&timezone=auto`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Weather API failed');
+        const data = await response.json();
+        
+        // Parse hourly forecast (next 24 hours from current time)
+        const currentHour = new Date().getHours();
+        const hourly = [];
+        for (let i = 0; i < 24; i++) {
+          const idx = currentHour + i;
+          if (idx < data.hourly.time.length) {
+            hourly.push({
+              time: data.hourly.time[idx].split('T')[1].slice(0, 5),
+              temp: Math.round(data.hourly.temperature_2m[idx]),
+              code: data.hourly.weather_code[idx],
+              humidity: data.hourly.relative_humidity_2m[idx]
+            });
+          }
+        }
+        
+        // Parse daily forecast (next 7 days)
+        const daily = [];
+        for (let i = 0; i < Math.min(7, data.daily.time.length); i++) {
+          const date = new Date(data.daily.time[i]);
+          daily.push({
+            date: data.daily.time[i],
+            dayName: i === 0 ? '今天' : i === 1 ? '明天' : ['周日','周一','周二','周三','周四','周五','周六'][date.getDay()],
+            tempMax: Math.round(data.daily.temperature_2m_max[i]),
+            tempMin: Math.round(data.daily.temperature_2m_min[i]),
+            feelsLike: Math.round(data.daily.apparent_temperature_max[i]),
+            windSpeed: data.daily.wind_speed_10m_max[i],
+            code: data.daily.weather_code[i]
+          });
+        }
+        
+        return {
+          current: {
+            temp: Math.round(data.current.temperature_2m),
+            feelsLike: Math.round(data.current.apparent_temperature),
+            humidity: data.current.relative_humidity_2m,
+            windSpeed: data.current.wind_speed_10m,
+            code: data.current.weather_code
+          },
+          hourly,
+          daily,
+          city: API.weather.getStoredCity() || '当前位置'
+        };
+      } catch (e) {
+        console.error('Full weather fetch error:', e);
+        return null;
+      }
+    },
     async fetchByCityName(cityName) {
       try {
         const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=1&language=zh&format=json`;
@@ -654,6 +710,25 @@ const API = {
           navigator.geolocation.getCurrentPosition(
             async (pos) => {
               const weather = await API.weather.fetchCurrentWeather(pos.coords.latitude, pos.coords.longitude);
+              resolve(weather);
+            },
+            () => resolve(null),
+            { timeout: 5000 }
+          );
+        });
+      }
+      return null;
+    },
+    async loadFullWeather() {
+      const stored = API.weather.getStoredCity();
+      if (stored) {
+        return await API.weather.fetchFullWeather(stored.lat, stored.lon);
+      }
+      if (navigator.geolocation) {
+        return new Promise((resolve) => {
+          navigator.geolocation.getCurrentPosition(
+            async (pos) => {
+              const weather = await API.weather.fetchFullWeather(pos.coords.latitude, pos.coords.longitude);
               resolve(weather);
             },
             () => resolve(null),
@@ -1042,6 +1117,7 @@ const App = {
       food: Pages.food,
       home: Pages.home,
       travel: Pages.travel,
+      weather: Pages.weather,
       profile: Pages.profile
     };
     const pageFn = pages[route];
@@ -2148,7 +2224,154 @@ const Pages = {
     Pages._renderCommute();
   },
 
-  profile() {
+  weather() {
+    const html = `
+      <div class="page-title">
+        <div><h2>🌤️ 天气</h2><div class="subtitle">实时天气 · 7天预报 · 穿衣建议</div></div>
+        <button class="btn btn-light btn-sm" onclick="Pages._searchCityWeather()">🔍 切换城市</button>
+      </div>
+      
+      <div id="weatherLoading" class="loading" style="text-align:center;padding:60px 20px">
+        <div class="spinner" style="width:40px;height:40px"></div>
+        <p style="margin-top:16px;color:var(--text-muted);font-size:14px">正在获取天气数据...</p>
+      </div>
+      
+      <div id="weatherContent" style="display:none">
+        <!-- 当前天气大卡片 -->
+        <div class="dash-section" style="background:linear-gradient(135deg,rgba(0,187,249,0.15),rgba(6,214,160,0.1));border:2px solid rgba(0,187,249,0.2);border-radius:var(--radius);padding:24px;text-align:center">
+          <div style="font-size:14px;color:var(--text-muted);margin-bottom:8px" id="wCity">--</div>
+          <div style="font-size:72px;margin:10px 0" id="wIcon">🌡️</div>
+          <div style="font-size:48px;font-weight:800;color:var(--heading);line-height:1" id="wTemp">--°C</div>
+          <div style="font-size:16px;color:var(--text);margin-top:8px" id="wDesc">--</div>
+          <div style="display:flex;justify-content:center;gap:24px;margin-top:20px;font-size:14px;color:var(--text-muted)">
+            <div>💨 风速 <span id="wWind">--</span> km/h</div>
+            <div>💧 湿度 <span id="wHumidity">--</span>%</div>
+            <div>🌡️ 体感 <span id="wFeels">--</span>°C</div>
+          </div>
+        </div>
+        
+        <!-- 穿衣建议 -->
+        <div class="dash-section" style="background:rgba(255,209,102,0.08);border:1.5px solid rgba(255,209,102,0.15)">
+          <h3><span class="ico">👔</span> 穿衣建议</h3>
+          <div id="wAdvice" style="font-size:15px;color:var(--text);line-height:1.6;padding:8px 0">--</div>
+        </div>
+        
+        <!-- 逐小时预报 -->
+        <div class="dash-section">
+          <h3><span class="ico">⏰</span> 逐小时预报</h3>
+          <div id="wHourly" style="display:flex;gap:12px;overflow-x:auto;padding:8px 0;scrollbar-width:none">
+            <!-- 动态生成 -->
+          </div>
+        </div>
+        
+        <!-- 7天预报 -->
+        <div class="dash-section">
+          <h3><span class="ico">📅</span> 7天预报</h3>
+          <div id="wDaily" style="display:flex;flex-direction:column;gap:10px">
+            <!-- 动态生成 -->
+          </div>
+        </div>
+      </div>
+      
+      <div id="weatherError" class="empty-state" style="display:none;padding:60px 20px">
+        <div class="icon">🌧️</div>
+        <div class="title">获取天气失败</div>
+        <div class="desc">请检查网络连接或尝试切换城市</div>
+        <button class="btn btn-primary btn-sm" style="margin-top:16px" onclick="Pages.weather()">重试</button>
+      </div>
+    `;
+    document.getElementById('mainContent').innerHTML = html;
+    
+    // Load weather data
+    Pages._loadWeatherPage();
+  },
+  
+  async _loadWeatherPage() {
+    const loading = document.getElementById('weatherLoading');
+    const content = document.getElementById('weatherContent');
+    const error = document.getElementById('weatherError');
+    
+    loading.style.display = 'block';
+    content.style.display = 'none';
+    error.style.display = 'none';
+    
+    const data = await API.weather.loadFullWeather();
+    
+    loading.style.display = 'none';
+    
+    if (!data) {
+      error.style.display = 'flex';
+      error.style.flexDirection = 'column';
+      error.style.alignItems = 'center';
+      return;
+    }
+    
+    content.style.display = 'block';
+    
+    // Current weather
+    document.getElementById('wCity').textContent = data.city;
+    document.getElementById('wIcon').textContent = API.weather.getIcon(data.current.code);
+    document.getElementById('wTemp').textContent = `${data.current.temp}°C`;
+    document.getElementById('wDesc').textContent = API.weather.getDesc(data.current.code);
+    document.getElementById('wWind').textContent = data.current.windSpeed;
+    document.getElementById('wHumidity').textContent = data.current.humidity;
+    document.getElementById('wFeels').textContent = data.current.feelsLike;
+    
+    // Outfit advice
+    const advice = API.weather.getOutfitAdvice(data.current.temp);
+    const outfit = API.suggestOutfit(API.weather.tempToCategory(data.current.temp), 'casual');
+    let adviceText = advice;
+    if (outfit.top || outfit.bottom) {
+      const parts = [];
+      if (outfit.top) parts.push(outfit.top.name);
+      if (outfit.bottom) parts.push(outfit.bottom.name);
+      if (outfit.outerwear) parts.push(outfit.outerwear.name);
+      if (parts.length) adviceText += '<br><br>🎯 推荐搭配：' + parts.join(' + ');
+    }
+    document.getElementById('wAdvice').innerHTML = adviceText;
+    
+    // Hourly forecast
+    const hourlyHtml = data.hourly.map(h => `
+      <div style="flex-shrink:0;text-align:center;padding:12px 8px;background:var(--card-bg);border-radius:12px;min-width:70px">
+        <div style="font-size:12px;color:var(--text-muted)">${h.time}</div>
+        <div style="font-size:28px;margin:4px 0">${API.weather.getIcon(h.code)}</div>
+        <div style="font-size:16px;font-weight:700">${h.temp}°</div>
+      </div>
+    `).join('');
+    document.getElementById('wHourly').innerHTML = hourlyHtml;
+    
+    // Daily forecast
+    const dailyHtml = data.daily.map((d, i) => `
+      <div style="display:flex;align-items:center;gap:16px;padding:12px 16px;background:var(--card-bg);border-radius:var(--radius-sm);${i===0?'border:2px solid rgba(0,187,249,0.3)':''}">
+        <div style="width:50px;font-weight:700;font-size:14px;color:var(--heading)">${d.dayName}</div>
+        <div style="font-size:32px">${API.weather.getIcon(d.code)}</div>
+        <div style="flex:1">
+          <div style="font-size:14px;color:var(--text)">${API.weather.getDesc(d.code)}</div>
+          <div style="font-size:12px;color:var(--text-muted)">体感 ${d.feelsLike}°C · 风速 ${d.windSpeed} km/h</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:18px;font-weight:800;color:var(--heading)">${d.tempMax}°</div>
+          <div style="font-size:14px;color:var(--text-muted)">${d.tempMin}°</div>
+        </div>
+      </div>
+    `).join('');
+    document.getElementById('wDaily').innerHTML = dailyHtml;
+  },
+  
+  async _searchCityWeather() {
+    const city = prompt('请输入城市名称（如：北京、上海、广州）：');
+    if (!city) return;
+    
+    Toast.info('正在搜索城市...');
+    const weather = await API.weather.fetchByCityName(city);
+    
+    if (weather) {
+      Toast.success(`已切换到 ${weather.city}`);
+      Pages._loadWeatherPage();
+    } else {
+      Toast.error('城市未找到，请检查拼写');
+    }
+  },
     const user = API.profile();
     const html = `
       <div class="page-title">
