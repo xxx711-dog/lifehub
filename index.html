@@ -620,7 +620,7 @@ const API = {
           humidity: data.current.relative_humidity_2m,
           windSpeed: data.current.wind_speed_10m,
           code: data.current.weather_code,
-          city: API.weather.getStoredCity() || '当前位置'
+          city: (API.weather.getStoredCity() || {}).name || '当前位置'
         };
       } catch (e) {
         console.error('Weather fetch error:', e);
@@ -674,7 +674,7 @@ const API = {
           },
           hourly,
           daily,
-          city: API.weather.getStoredCity() || '当前位置'
+          city: (API.weather.getStoredCity() || {}).name || '当前位置'
         };
       } catch (e) {
         console.error('Full weather fetch error:', e);
